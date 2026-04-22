@@ -13,6 +13,7 @@ import Budgets from "./screens/Budgets";
 import Settings from "./screens/Settings";
 import Profile from "./screens/Profile";
 import Notifications from "./screens/Notifications";
+import Wallets from "./screens/Wallets";
 import AppLayout from "./components/AppLayout";
 
 export const router = createBrowserRouter([
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
       { path: "add", Component: AddTransaction },
       { path: "history", Component: TransactionHistory },
       { path: "budgets", Component: Budgets },
+      { path: "wallets", Component: Wallets },
       { path: "settings", Component: Settings },
       { path: "profile", Component: Profile },
       { path: "notifications", Component: Notifications },

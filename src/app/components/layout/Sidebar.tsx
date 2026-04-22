@@ -7,6 +7,7 @@ export function Sidebar() {
 
   const mainTabs = [
     { id: "overview", label: "Tổng Quan", icon: LayoutDashboard, path: "/app" },
+    { id: "wallets", label: "Ví & Tài Khoản", icon: Wallet, path: "/app/wallets" },
     { id: "history", label: "Lịch Sử", icon: Receipt, path: "/app/history" },
     { id: "add", label: "Giao Dịch Mới", icon: Plus, path: "/app/add" },
     { id: "budgets", label: "Ngân Sách", icon: Target, path: "/app/budgets" },

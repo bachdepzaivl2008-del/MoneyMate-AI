@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router";
-import { LayoutDashboard, Receipt, Plus, Target, Settings } from "lucide-react";
+import { LayoutDashboard, Receipt, Plus, Target, Settings, Wallet } from "lucide-react";
 
 export function BottomNav() {
   const navigate = useNavigate();
@@ -7,7 +7,7 @@ export function BottomNav() {
 
   const tabs = [
     { id: "overview", label: "Tổng Quan", icon: LayoutDashboard, path: "/app" },
-    { id: "history", label: "Lịch Sử", icon: Receipt, path: "/app/history" },
+    { id: "wallets", label: "Ví", icon: Wallet, path: "/app/wallets" },
     { id: "add", label: "Thêm", icon: Plus, path: "/app/add" },
     { id: "budgets", label: "Ngân Sách", icon: Target, path: "/app/budgets" },
     { id: "settings", label: "Cài Đặt", icon: Settings, path: "/app/settings" },
