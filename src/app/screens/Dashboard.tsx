@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { TrendingUp, TrendingDown, ShoppingBag, Utensils, Car, Eye, PlusCircle, History, Target } from "lucide-react";
 import { useNavigate } from "react-router";
+import { PageContainer } from "../components/layout/PageContainer";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { Card, CardContent } from "../components/ui/card";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -30,97 +33,104 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="px-6 py-6 space-y-6">
-      {/* Balance Card */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 text-white">
-        <div className="text-sm opacity-90 mb-2">Số Dư Hiện Tại</div>
-        <div className="text-4xl mb-4">4.285.500₫</div>
-        <div className="flex items-center gap-2 text-sm">
-          <TrendingUp className="w-4 h-4" />
-          <span>+12% so với tháng trước</span>
+    <PageContainer className="space-y-6 lg:space-y-8">
+      {/* Top Section: Balance & Stats (Left), Actions (Right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          {/* Balance Card */}
+          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 lg:p-8 text-white shadow-md">
+            <div className="text-sm opacity-90 mb-2 font-medium">Số Dư Hiện Tại</div>
+            <div className="text-4xl lg:text-5xl mb-4 font-semibold tracking-tight">4.285.500₫</div>
+            <div className="flex items-center gap-2 text-sm bg-white/20 w-fit px-3 py-1 rounded-full backdrop-blur-sm">
+              <TrendingUp className="w-4 h-4" />
+              <span>+12% so với tháng trước</span>
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-3 lg:gap-6">
+        <Card className="border-border shadow-sm p-4 text-center rounded-2xl flex flex-col items-center justify-center">
+          <div className="text-green-600 text-xl font-semibold mb-1">5.2tr</div>
+          <div className="text-xs text-muted-foreground font-medium">Thu Nhập</div>
+        </Card>
+        <Card className="border-border shadow-sm p-4 text-center rounded-2xl flex flex-col items-center justify-center">
+          <div className="text-red-600 text-xl font-semibold mb-1">914k</div>
+          <div className="text-xs text-muted-foreground font-medium">Chi Tiêu</div>
+        </Card>
+        <Card className="border-border shadow-sm p-4 text-center rounded-2xl flex flex-col items-center justify-center">
+          <div className="text-blue-600 text-xl font-semibold mb-1">4.3tr</div>
+          <div className="text-xs text-muted-foreground font-medium">Còn Lại</div>
+        </Card>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="lg:col-span-1">
+          <SectionHeader title="Thao Tác Nhanh" className="mb-3" />
+          <div className="grid grid-cols-3 lg:grid-cols-1 gap-3 lg:gap-4">
+            <button
+              onClick={() => navigate("/app/add")}
+              className="bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-600 transition-colors flex lg:flex-row flex-col items-center lg:justify-start gap-3 shadow-sm"
+            >
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <PlusCircle className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-xs lg:text-sm font-medium text-slate-700">Thêm Giao Dịch</span>
+            </button>
+            <button
+              onClick={() => navigate("/app/history")}
+              className="bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-600 transition-colors flex lg:flex-row flex-col items-center lg:justify-start gap-3 shadow-sm"
+            >
+              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <History className="w-6 h-6 text-green-600" />
+              </div>
+              <span className="text-xs lg:text-sm font-medium text-slate-700">Lịch Sử</span>
+            </button>
+            <button
+              onClick={() => navigate("/app/budgets")}
+              className="bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-600 transition-colors flex lg:flex-row flex-col items-center lg:justify-start gap-3 shadow-sm"
+            >
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Target className="w-6 h-6 text-purple-600" />
+              </div>
+              <span className="text-xs lg:text-sm font-medium text-slate-700">Ngân Sách</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white rounded-2xl p-4 border border-border">
-          <div className="text-green-600 text-2xl mb-1">5.2tr</div>
-          <div className="text-sm text-muted-foreground">Thu Nhập</div>
-        </div>
-        <div className="bg-white rounded-2xl p-4 border border-border">
-          <div className="text-red-600 text-2xl mb-1">914k</div>
-          <div className="text-sm text-muted-foreground">Chi Tiêu</div>
-        </div>
-        <div className="bg-white rounded-2xl p-4 border border-border">
-          <div className="text-blue-600 text-2xl mb-1">4.3tr</div>
-          <div className="text-sm text-muted-foreground">Còn Lại</div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h3 className="mb-3">Thao Tác Nhanh</h3>
-        <div className="grid grid-cols-3 gap-3">
-          <button
-            onClick={() => navigate("/app/add")}
-            className="bg-white rounded-2xl p-4 border border-border hover:border-blue-600 transition-colors flex flex-col items-center gap-2"
-          >
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <PlusCircle className="w-6 h-6 text-blue-600" />
-            </div>
-            <span className="text-sm">Thêm</span>
-          </button>
-          <button
-            onClick={() => navigate("/app/history")}
-            className="bg-white rounded-2xl p-4 border border-border hover:border-blue-600 transition-colors flex flex-col items-center gap-2"
-          >
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-              <History className="w-6 h-6 text-green-600" />
-            </div>
-            <span className="text-sm">Lịch Sử</span>
-          </button>
-          <button
-            onClick={() => navigate("/app/budgets")}
-            className="bg-white rounded-2xl p-4 border border-border hover:border-blue-600 transition-colors flex flex-col items-center gap-2"
-          >
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <Target className="w-6 h-6 text-purple-600" />
-            </div>
-            <span className="text-sm">Ngân Sách</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Recent Transactions */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3>Giao Dịch Gần Đây</h3>
-          <button
-            onClick={() => navigate("/app/history")}
-            className="text-blue-600 text-sm"
-          >
-            Xem Tất Cả
-          </button>
-        </div>
-        <div className="space-y-2">
+      {/* Bottom Section: Transactions & Budgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Transactions */}
+        <div>
+        <SectionHeader 
+          title="Giao Dịch Gần Đây" 
+          action={
+            <button onClick={() => navigate("/app/history")} className="text-blue-600 text-sm font-medium hover:underline">
+              Xem Tất Cả
+            </button>
+          } 
+          className="mb-3" 
+        />
+        <div className="space-y-3">
           {recentTransactions.map((transaction) => {
             const Icon = transaction.icon;
             return (
-              <div
+              <Card
                 key={transaction.id}
-                className="bg-white rounded-2xl p-4 border border-border flex items-center gap-3"
+                className="p-4 border-slate-100 flex items-center gap-3 shadow-sm"
               >
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-6 h-6 text-gray-600" />
+                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-slate-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-base mb-0.5">{transaction.title}</div>
-                  <div className="text-sm text-muted-foreground">{transaction.date}</div>
+                  <div className="text-sm font-medium text-slate-800 mb-0.5">{transaction.title}</div>
+                  <div className="text-xs text-slate-500">{transaction.date}</div>
                 </div>
-                <div className="text-red-600">
+                <div className="text-red-600 font-semibold text-sm">
                   {Math.abs(transaction.amount).toLocaleString('vi-VN')}₫
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -128,39 +138,40 @@ export default function Dashboard() {
 
       {/* Budget Progress */}
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3>Tiến Độ Ngân Sách</h3>
-          <button
-            onClick={() => navigate("/app/budgets")}
-            className="text-blue-600 text-sm"
-          >
-            Quản Lý
-          </button>
-        </div>
+        <SectionHeader 
+          title="Tiến Độ Ngân Sách" 
+          action={
+            <button onClick={() => navigate("/app/budgets")} className="text-blue-600 text-sm font-medium hover:underline">
+              Quản Lý
+            </button>
+          } 
+          className="mb-3" 
+        />
         <div className="space-y-3">
           {budgets.map((budget) => {
             const percentage = (budget.spent / budget.total) * 100;
             const isWarning = percentage > 80;
             return (
-              <div key={budget.category} className="bg-white rounded-2xl p-4 border border-border">
+              <Card key={budget.category} className="p-4 border-slate-100 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-base">{budget.category}</span>
-                  <span className={`text-sm ${isWarning ? "text-orange-600" : "text-muted-foreground"}`}>
+                  <span className="text-sm font-medium text-slate-800">{budget.category}</span>
+                  <span className={`text-xs font-semibold ${isWarning ? "text-orange-600" : "text-slate-500"}`}>
                     {(budget.spent/1000).toFixed(0)}k / {(budget.total/1000).toFixed(0)}k₫
                   </span>
                 </div>
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all ${isWarning ? "bg-orange-600" : budget.color}`}
                     style={{ width: `${Math.min(percentage, 100)}%` }}
                   />
                 </div>
-              </div>
+              </Card>
             );
           })}
+          </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -168,57 +179,59 @@ function DashboardSimple() {
   const navigate = useNavigate();
 
   return (
-    <div className="px-6 py-6 space-y-6">
+    <PageContainer className="space-y-6">
       {/* Large Balance Card */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 text-white text-center">
-        <div className="text-lg opacity-90 mb-3">Số Tiền Của Bạn</div>
-        <div className="text-5xl mb-2">4.3tr₫</div>
-        <div className="text-lg opacity-90">Có Sẵn Ngay</div>
+      <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 text-white text-center shadow-lg">
+        <div className="text-sm opacity-90 mb-3 font-medium uppercase tracking-wider">Số Tiền Của Bạn</div>
+        <div className="text-5xl mb-2 font-semibold">4.3tr₫</div>
+        <div className="text-sm opacity-90 font-medium">Có Sẵn Ngay</div>
       </div>
 
       {/* Large Stats */}
-      <div className="space-y-4">
-        <div className="bg-white rounded-2xl p-6 border-2 border-border">
-          <div className="text-muted-foreground text-lg mb-2">Tiền Vào Tháng Này</div>
-          <div className="text-green-600 text-3xl">5.2tr₫</div>
-        </div>
-        <div className="bg-white rounded-2xl p-6 border-2 border-border">
-          <div className="text-muted-foreground text-lg mb-2">Tiền Ra Tháng Này</div>
-          <div className="text-red-600 text-3xl">914k₫</div>
-        </div>
+      <div className="space-y-3">
+        <Card className="p-6 border-slate-100 shadow-sm flex justify-between items-center">
+          <div className="text-slate-500 text-sm font-medium">Tiền Vào Tháng Này</div>
+          <div className="text-green-600 text-2xl font-bold">5.2tr₫</div>
+        </Card>
+        <Card className="p-6 border-slate-100 shadow-sm flex justify-between items-center">
+          <div className="text-slate-500 text-sm font-medium">Tiền Ra Tháng Này</div>
+          <div className="text-red-600 text-2xl font-bold">914k₫</div>
+        </Card>
       </div>
 
       {/* Large Action Buttons */}
-      <div className="space-y-3">
+      <div className="space-y-3 pt-2">
         <button
           onClick={() => navigate("/app/add")}
-          className="w-full h-20 bg-blue-600 text-white rounded-2xl text-xl flex items-center justify-center gap-3 shadow-lg"
+          className="w-full h-[72px] bg-blue-600 hover:bg-blue-700 transition-colors text-white rounded-2xl text-lg font-semibold flex items-center justify-center gap-3 shadow-md"
         >
-          <PlusCircle className="w-8 h-8" />
+          <PlusCircle className="w-6 h-6" />
           <span>Thêm Giao Dịch</span>
         </button>
         <button
           onClick={() => navigate("/app/history")}
-          className="w-full h-16 bg-white border-2 border-border rounded-2xl text-lg flex items-center justify-center gap-3"
+          className="w-full h-16 bg-white hover:bg-slate-50 transition-colors border-2 border-slate-100 rounded-2xl text-base font-medium text-slate-700 flex items-center justify-center gap-3 shadow-sm"
         >
-          <Eye className="w-7 h-7" />
+          <Eye className="w-5 h-5 text-slate-500" />
           <span>Xem Tất Cả Giao Dịch</span>
         </button>
       </div>
 
       {/* Top Spending */}
-      <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-6">
-        <div className="text-lg mb-3">Chi Tiêu Nhiều Nhất</div>
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-orange-600 rounded-xl flex items-center justify-center">
-            <Utensils className="w-7 h-7 text-white" />
+      <div className="mt-6">
+        <SectionHeader title="Chi Tiêu Nhiều Nhất" />
+        <Card className="bg-orange-50/50 border border-orange-100 p-5 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-orange-500 shadow-sm rounded-xl flex items-center justify-center">
+              <Utensils className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-slate-800 mb-0.5">Ăn Uống</div>
+              <div className="text-sm font-medium text-orange-600">285k₫ tháng này</div>
+            </div>
           </div>
-          <div>
-            <div className="text-xl mb-1">Ăn Uống</div>
-            <div className="text-muted-foreground">285k₫ tháng này</div>
-          </div>
-        </div>
+        </Card>
       </div>
-    </div>
+    </PageContainer>
   );
 }

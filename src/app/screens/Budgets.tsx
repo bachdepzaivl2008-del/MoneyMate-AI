@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Plus, ShoppingBag, Utensils, Car, Home, AlertCircle, Edit, Trash2 } from "lucide-react";
+import { PageContainer } from "../components/layout/PageContainer";
+import { Card } from "../components/ui/card";
 
 export default function Budgets() {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -40,7 +42,7 @@ export default function Budgets() {
   ];
 
   return (
-    <div className="px-6 py-6 space-y-6">
+    <PageContainer className="space-y-6 lg:space-y-8 max-w-xl lg:max-w-4xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl mb-2">Ngân Sách</h1>
@@ -97,7 +99,7 @@ export default function Budgets() {
       )}
 
       {/* Budget List */}
-      <div className="space-y-4 pb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 pb-6">
         {budgets.map((budget) => {
           const Icon = budget.icon;
           const percentage = (budget.spent / budget.total) * 100;
@@ -106,14 +108,14 @@ export default function Budgets() {
           const isOverBudget = percentage >= 100;
 
           return (
-            <div
+            <Card
               key={budget.id}
-              className={`bg-white rounded-2xl p-5 border-2 ${
+              className={`p-5 shadow-sm ${
                 isOverBudget
-                  ? "border-red-600 bg-red-50"
+                  ? "border-red-200 bg-red-50/50"
                   : isWarning
-                  ? "border-orange-600 bg-orange-50"
-                  : "border-border"
+                  ? "border-orange-200 bg-orange-50/50"
+                  : "border-slate-100"
               }`}
             >
               {/* Header */}
@@ -181,10 +183,10 @@ export default function Budgets() {
                   <span className="text-sm">Xóa</span>
                 </button>
               </div>
-            </div>
+            </Card>
           );
         })}
       </div>
-    </div>
+    </PageContainer>
   );
 }

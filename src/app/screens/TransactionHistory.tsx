@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Search, Filter, ShoppingBag, Utensils, Car, Home, Heart, TrendingUp, TrendingDown, Edit, Trash2 } from "lucide-react";
+import { PageContainer } from "../components/layout/PageContainer";
+import { Card } from "../components/ui/card";
 
 export default function TransactionHistory() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -108,7 +110,7 @@ export default function TransactionHistory() {
   };
 
   return (
-    <div className="px-6 py-6 space-y-6">
+    <PageContainer className="space-y-6 lg:space-y-8 max-w-xl lg:max-w-4xl mx-auto">
       <div>
         <h1 className="text-2xl mb-2">Lịch Sử Giao Dịch</h1>
         <p className="text-muted-foreground">Xem và quản lý tất cả giao dịch</p>
@@ -165,14 +167,14 @@ export default function TransactionHistory() {
         {Object.entries(groupedByDate).map(([date, dayTransactions]) => (
           <div key={date}>
             <div className="text-sm text-muted-foreground mb-3">{formatDate(date)}</div>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
               {dayTransactions.map((transaction) => {
                 const Icon = transaction.icon;
                 const isIncome = transaction.type === "income";
                 return (
-                  <div
+                  <Card
                     key={transaction.id}
-                    className="bg-white rounded-2xl p-4 border border-border"
+                    className="p-4 border-slate-100 shadow-sm"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div
@@ -202,13 +204,13 @@ export default function TransactionHistory() {
                         <span className="text-sm">Xóa</span>
                       </button>
                     </div>
-                  </div>
+                  </Card>
                 );
               })}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
 }

@@ -11,6 +11,8 @@ import AddTransaction from "./screens/AddTransaction";
 import TransactionHistory from "./screens/TransactionHistory";
 import Budgets from "./screens/Budgets";
 import Settings from "./screens/Settings";
+import Profile from "./screens/Profile";
+import Notifications from "./screens/Notifications";
 import AppLayout from "./components/AppLayout";
 
 export const router = createBrowserRouter([
@@ -51,6 +53,8 @@ export const router = createBrowserRouter([
       { path: "history", Component: TransactionHistory },
       { path: "budgets", Component: Budgets },
       { path: "settings", Component: Settings },
+      { path: "profile", Component: Profile },
+      { path: "notifications", Component: Notifications },
     ],
   },
 ]);
