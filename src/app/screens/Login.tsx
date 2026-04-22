@@ -129,6 +129,29 @@ export default function Login() {
             Đăng Ký
           </button>
         </p>
+
+        {/* Developer Mode Section */}
+        <div className="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-200 border-dashed">
+          <p className="text-center text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider">
+            Developer Mode 🛠️
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => navigate("/onboarding/start")}
+              className="px-4 py-2 bg-white text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 hover:text-blue-600 transition-colors shadow-sm"
+              title="Đi tới luồng Onboarding"
+            >
+              🚀 New User
+            </button>
+            <button
+              onClick={() => navigate("/app")}
+              className="px-4 py-2 bg-white text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 hover:text-blue-600 transition-colors shadow-sm"
+              title="Đi thẳng vào Dashboard"
+            >
+              🏠 Old User
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
