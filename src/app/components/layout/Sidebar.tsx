@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router";
-import { LayoutDashboard, Receipt, Plus, Target, Settings, Bell, User, Wallet } from "lucide-react";
+import { LayoutDashboard, Receipt, Plus, Target, Settings, Bell, User, Wallet, PiggyBank, Brain, Repeat } from "lucide-react";
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -11,6 +11,12 @@ export function Sidebar() {
     { id: "history", label: "Lịch Sử", icon: Receipt, path: "/app/history" },
     { id: "add", label: "Giao Dịch Mới", icon: Plus, path: "/app/add" },
     { id: "budgets", label: "Ngân Sách", icon: Target, path: "/app/budgets" },
+    { id: "goals", label: "Mục Tiêu Tiết Kiệm", icon: PiggyBank, path: "/app/goals" },
+  ];
+
+  const analysisTabs = [
+    { id: "insights", label: "AI Insights", icon: Brain, path: "/app/insights" },
+    { id: "recurring", label: "Lịch Định Kỳ", icon: Repeat, path: "/app/recurring" },
   ];
 
   const secondaryTabs = [
@@ -69,6 +75,13 @@ export function Sidebar() {
         </div>
         {mainTabs.map((tab) => (
           <NavButton key={tab.id} tab={tab} isAdd={tab.id === "add"} />
+        ))}
+
+        <div className="px-2 pt-4 mb-2">
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Phân tích & Tự động</span>
+        </div>
+        {analysisTabs.map((tab) => (
+          <NavButton key={tab.id} tab={tab} />
         ))}
 
         <div className="px-2 pt-4 mb-2">

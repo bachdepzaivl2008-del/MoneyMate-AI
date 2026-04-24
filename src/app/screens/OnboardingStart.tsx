@@ -5,10 +5,11 @@ export default function OnboardingStart() {
   const navigate = useNavigate();
 
   const userTypes = [
-    { id: "personal", label: "Cá Nhân", icon: User, description: "Quản lý tài chính của riêng tôi" },
-    { id: "family", label: "Gia Đình", icon: Users, description: "Theo dõi ngân sách gia đình" },
-    { id: "student", label: "Sinh Viên", icon: GraduationCap, description: "Học cách quản lý tiền" },
-    { id: "elderly", label: "Chế Độ Đơn Giản", icon: Heart, description: "Dễ sử dụng và tiếp cận" },
+    { id: "personal", label: "Cá Nhân", icon: User, description: "Quản lý tài chính cá nhân" },
+    { id: "family", label: "Gia Đình", icon: Users, description: "Quản lý thu chi chung" },
+    { id: "student", label: "Sinh Viên", icon: GraduationCap, description: "Học sinh, sinh viên" },
+    { id: "beginner", label: "Người Mới Bắt Đầu", icon: User, description: "Bắt đầu quản lý tiền" },
+    { id: "elderly", label: "Chế Độ Đơn Giản", icon: Heart, description: "Dễ sử dụng cho người lớn tuổi" },
   ];
 
   return (
@@ -19,9 +20,10 @@ export default function OnboardingStart() {
           <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
           <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
           <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
+          <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
         </div>
-        <h1 className="text-2xl mb-2">Chào Mừng Đến MoneyMate!</h1>
-        <p className="text-muted-foreground text-lg">Hãy cho chúng tôi biết về bạn</p>
+        <h1 className="text-2xl mb-2 font-bold">Bạn dùng cho ai?</h1>
+        <p className="text-muted-foreground text-lg">Hãy chọn đối tượng sử dụng chính</p>
       </div>
 
       <div className="flex-1 space-y-4">

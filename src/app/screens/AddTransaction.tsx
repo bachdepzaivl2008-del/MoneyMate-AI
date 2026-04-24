@@ -9,6 +9,7 @@ export default function AddTransaction() {
   const navigate = useNavigate();
   const { wallets, addTransaction } = useAppStore();
 
+  const [smartInput, setSmartInput] = useState("");
   const [transactionType, setTransactionType] = useState<"expense" | "income">("expense");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -16,6 +17,48 @@ export default function AddTransaction() {
   const [selectedWalletId, setSelectedWalletId] = useState(wallets.find(w => w.isDefault)?.id || wallets[0]?.id || "");
   const [notes, setNotes] = useState("");
   const [saved, setSaved] = useState(false);
+
+  const handleSmartInput = (val: string) => {
+    setSmartInput(val);
+    if (!val) return;
+
+    // Simple parsing logic (simulating AI)
+    let parsedAmount = "";
+    let parsedDesc = val;
+    let parsedType: "expense" | "income" = "expense";
+    let parsedCat = "";
+
+    // Parse amount (e.g., 35k, 1tr2, 500.000)
+    const amountMatch = val.match(/(\d+[.,]?\d*)\s*(k|tr|triệu|m|đ|vnd)?/i);
+    if (amountMatch) {
+      let num = parseFloat(amountMatch[1].replace(",", "."));
+      const unit = (amountMatch[2] || "").toLowerCase();
+      
+      if (unit === "k") num *= 1000;
+      else if (unit === "tr" || unit === "triệu") num *= 1_000_000;
+      
+      parsedAmount = num.toString();
+      parsedDesc = val.replace(amountMatch[0], "").trim();
+    }
+
+    // Parse type & category hints
+    const lowerDesc = parsedDesc.toLowerCase();
+    if (lowerDesc.includes("gửi") || lowerDesc.includes("lương") || lowerDesc.includes("thu") || lowerDesc.includes("thưởng")) {
+      parsedType = "income";
+    }
+
+    // Category suggestions
+    if (lowerDesc.includes("ăn") || lowerDesc.includes("uống") || lowerDesc.includes("phở") || lowerDesc.includes("cà phê")) parsedCat = "Ăn Uống";
+    else if (lowerDesc.includes("xăng") || lowerDesc.includes("xe") || lowerDesc.includes("grab")) parsedCat = "Di Chuyển";
+    else if (lowerDesc.includes("mua") || lowerDesc.includes("shopee") || lowerDesc.includes("áo")) parsedCat = "Mua Sắm";
+    else if (lowerDesc.includes("điện") || lowerDesc.includes("nước") || lowerDesc.includes("internet")) parsedCat = "Tiện Ích";
+    else if (lowerDesc.includes("lương")) parsedCat = "Lương";
+
+    if (parsedAmount) setAmount(parsedAmount);
+    if (parsedDesc) setDescription(parsedDesc);
+    if (parsedType) setTransactionType(parsedType);
+    if (parsedCat) setSelectedCategory(parsedCat);
+  };
 
   const categories = [
     { id: "Mua Sắm", label: "Mua Sắm", icon: ShoppingBag },
@@ -77,6 +120,20 @@ export default function AddTransaction() {
         <h1 className="text-2xl font-bold text-slate-900 mb-1">Thêm Giao Dịch</h1>
         <p className="text-slate-500 text-sm">Theo dõi thu nhập hoặc chi tiêu</p>
       </div>
+
+      {/* Smart Input Section */}
+      <Card className="p-1 border-blue-100 bg-blue-50/30 overflow-hidden">
+        <div className="flex items-center px-4 py-3 bg-white">
+          <input
+            type="text"
+            value={smartInput}
+            onChange={(e) => handleSmartInput(e.target.value)}
+            className="flex-1 bg-transparent border-none focus:outline-none text-slate-700 placeholder:text-slate-400 font-medium"
+            placeholder="Nhập nhanh: ăn sáng 35k, đổ xăng 100k..."
+          />
+          <div className="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm">AI Active</div>
+        </div>
+      </Card>
 
       {/* Type Selector */}
       <div className="grid grid-cols-2 gap-3 max-w-md">

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { Sparkles, Gauge } from "lucide-react";
+import { Sparkles, Gauge, Heart } from "lucide-react";
 
 export default function OnboardingMode() {
   const navigate = useNavigate();
@@ -7,17 +7,24 @@ export default function OnboardingMode() {
   const modes = [
     {
       id: "simple",
-      label: "Chế Độ Đơn Giản",
+      label: "Cơ bản dễ dùng",
       icon: Heart,
-      description: "Chữ to hơn, ít tùy chọn hơn, dễ sử dụng hơn",
-      features: ["Nút lớn", "Nhãn rõ ràng", "Từng bước"],
+      description: "Tập trung vào sự đơn giản, chữ to rõ",
+      features: ["Nút lớn", "Thao tác đơn giản"],
     },
     {
       id: "standard",
-      label: "Chế Độ Tiêu Chuẩn",
+      label: "Tiêu chuẩn",
       icon: Gauge,
-      description: "Đầy đủ tính năng với tùy chọn nâng cao",
-      features: ["Tất cả tính năng", "Biểu đồ & thống kê", "Thao tác nhanh"],
+      description: "Cân bằng giữa tính năng và giao diện",
+      features: ["Đầy đủ tính năng", "Biểu đồ cơ bản"],
+    },
+    {
+      id: "expert",
+      label: "Nhiều số liệu hơn",
+      icon: Sparkles,
+      description: "Cho người dùng muốn phân tích chuyên sâu",
+      features: ["Báo cáo chi tiết", "Phân tích AI"],
     },
   ];
 
@@ -29,8 +36,9 @@ export default function OnboardingMode() {
           <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
           <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
           <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
+          <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
         </div>
-        <h1 className="text-2xl mb-2">Chọn Giao Diện</h1>
+        <h1 className="text-2xl mb-2 font-bold">Bạn muốn giao diện kiểu nào?</h1>
         <p className="text-muted-foreground text-lg">Chọn giao diện phù hợp với bạn</p>
       </div>
 
@@ -77,10 +85,3 @@ export default function OnboardingMode() {
   );
 }
 
-function Heart({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-    </svg>
-  );
-}

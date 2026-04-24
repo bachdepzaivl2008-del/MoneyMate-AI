@@ -21,6 +21,7 @@ export default function OnboardingWallet() {
           <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
           <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
           <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
+          <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
         </div>
         <h1 className="text-2xl mb-2">Tạo Ví Đầu Tiên</h1>
         <p className="text-muted-foreground text-lg">Thiết lập nơi bạn giữ tiền</p>

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { TrendingUp, ShoppingBag, Utensils, Car, Eye, PlusCircle, History, Target, Wallet } from "lucide-react";
+import { TrendingUp, ShoppingBag, Utensils, Car, PlusCircle, Target, Wallet, PiggyBank } from "lucide-react";
 import { useNavigate } from "react-router";
 import { PageContainer } from "../components/layout/PageContainer";
 import { SectionHeader } from "../components/ui/SectionHeader";
@@ -19,12 +18,14 @@ export default function Dashboard() {
   const {
     getTotalBalance, getMonthlyIncome, getMonthlyExpenses,
     getRecentTransactions, budgets, getSpentByCategory,
+    savingsGoals,
   } = useAppStore();
 
   const totalBalance = getTotalBalance();
   const monthlyIncome = getMonthlyIncome();
   const monthlyExpenses = getMonthlyExpenses();
   const recentTxs = getRecentTransactions(3);
+  const topGoals = savingsGoals.slice(0, 2);
 
   const formatMoney = (n: number) => {
     if (Math.abs(n) >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "tr";
@@ -36,70 +37,34 @@ export default function Dashboard() {
 
   return (
     <PageContainer className="space-y-6 lg:space-y-8">
-      {/* Top Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          {/* Balance Card */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 lg:p-8 text-white shadow-md">
-            <div className="text-sm opacity-90 mb-2 font-medium">Số Dư Hiện Tại</div>
-            <div className="text-4xl lg:text-5xl mb-4 font-semibold tracking-tight">
-              {formatFull(totalBalance)}
-            </div>
-            <div className="flex items-center gap-2 text-sm bg-white/20 w-fit px-3 py-1 rounded-full backdrop-blur-sm">
-              <TrendingUp className="w-4 h-4" />
-              <span>Thu nhập tháng: {formatMoney(monthlyIncome)}₫</span>
-            </div>
+      {/* Top Section - Balance & Stats */}
+      <div className="space-y-6">
+        {/* Balance Card */}
+        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 lg:p-8 text-white shadow-md">
+          <div className="text-sm opacity-90 mb-2 font-medium">Số Dư Hiện Tại</div>
+          <div className="text-4xl lg:text-6xl mb-4 font-semibold tracking-tight">
+            {formatFull(totalBalance)}
           </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-3 lg:gap-6">
-            <Card className="border-border shadow-sm p-4 text-center rounded-2xl flex flex-col items-center justify-center">
-              <div className="text-green-600 text-xl font-semibold mb-1">{formatMoney(monthlyIncome)}</div>
-              <div className="text-xs text-muted-foreground font-medium">Thu Nhập</div>
-            </Card>
-            <Card className="border-border shadow-sm p-4 text-center rounded-2xl flex flex-col items-center justify-center">
-              <div className="text-red-600 text-xl font-semibold mb-1">{formatMoney(monthlyExpenses)}</div>
-              <div className="text-xs text-muted-foreground font-medium">Chi Tiêu</div>
-            </Card>
-            <Card className="border-border shadow-sm p-4 text-center rounded-2xl flex flex-col items-center justify-center">
-              <div className="text-blue-600 text-xl font-semibold mb-1">{formatMoney(totalBalance)}</div>
-              <div className="text-xs text-muted-foreground font-medium">Tổng Tài Sản</div>
-            </Card>
+          <div className="flex items-center gap-2 text-sm bg-white/20 w-fit px-4 py-1.5 rounded-full backdrop-blur-sm">
+            <TrendingUp className="w-4 h-4" />
+            <span>Thu nhập tháng: {formatMoney(monthlyIncome)}₫</span>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="lg:col-span-1">
-          <SectionHeader title="Thao Tác Nhanh" className="mb-3" />
-          <div className="grid grid-cols-3 lg:grid-cols-1 gap-3 lg:gap-4">
-            <button
-              onClick={() => navigate("/app/add")}
-              className="bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-600 transition-colors flex lg:flex-row flex-col items-center lg:justify-start gap-3 shadow-sm"
-            >
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                <PlusCircle className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="text-xs lg:text-sm font-medium text-slate-700">Thêm Giao Dịch</span>
-            </button>
-            <button
-              onClick={() => navigate("/app/wallets")}
-              className="bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-600 transition-colors flex lg:flex-row flex-col items-center lg:justify-start gap-3 shadow-sm"
-            >
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Wallet className="w-6 h-6 text-green-600" />
-              </div>
-              <span className="text-xs lg:text-sm font-medium text-slate-700">Ví & Tài Khoản</span>
-            </button>
-            <button
-              onClick={() => navigate("/app/budgets")}
-              className="bg-white rounded-2xl p-4 border border-slate-100 hover:border-blue-600 transition-colors flex lg:flex-row flex-col items-center lg:justify-start gap-3 shadow-sm"
-            >
-              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Target className="w-6 h-6 text-purple-600" />
-              </div>
-              <span className="text-xs lg:text-sm font-medium text-slate-700">Ngân Sách</span>
-            </button>
-          </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-4 lg:gap-8">
+          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-white">
+            <div className="text-green-600 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(monthlyIncome)}</div>
+            <div className="text-sm text-muted-foreground font-medium">Thu Nhập</div>
+          </Card>
+          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-white">
+            <div className="text-red-600 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(monthlyExpenses)}</div>
+            <div className="text-sm text-muted-foreground font-medium">Chi Tiêu</div>
+          </Card>
+          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-white">
+            <div className="text-blue-600 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(totalBalance)}</div>
+            <div className="text-sm text-muted-foreground font-medium">Tổng Tài Sản</div>
+          </Card>
         </div>
       </div>
 
@@ -178,6 +143,44 @@ export default function Dashboard() {
             })}
           </div>
         </div>
+
+        {/* Savings Goals Widget */}
+        {topGoals.length > 0 && (
+          <div>
+            <SectionHeader
+              title="Mục Tiêu Tiết Kiệm"
+              action={
+                <button onClick={() => navigate("/app/goals")} className="text-blue-600 text-sm font-medium hover:underline">
+                  Xem Tất Cả
+                </button>
+              }
+              className="mb-3"
+            />
+            <div className="space-y-3">
+              {topGoals.map((goal) => {
+                const pct = goal.targetAmount > 0 ? (goal.savedAmount / goal.targetAmount) * 100 : 0;
+                return (
+                  <Card key={goal.id} className="overflow-hidden border-slate-100 shadow-sm">
+                    <div className={`bg-gradient-to-r ${goal.color} px-4 py-3 flex items-center gap-3`}>
+                      <span className="text-2xl">{goal.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-white font-semibold text-sm truncate">{goal.name}</div>
+                        <div className="text-white/75 text-xs">{formatMoney(goal.savedAmount)}₫ / {formatMoney(goal.targetAmount)}₫</div>
+                      </div>
+                      <span className="text-white font-bold text-sm">{pct.toFixed(0)}%</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-100">
+                      <div
+                        className={`h-full bg-gradient-to-r ${goal.color} transition-all`}
+                        style={{ width: `${Math.min(pct, 100)}%` }}
+                      />
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </PageContainer>
   );

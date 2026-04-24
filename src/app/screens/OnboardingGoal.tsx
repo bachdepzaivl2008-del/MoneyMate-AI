@@ -5,10 +5,10 @@ export default function OnboardingGoal() {
   const navigate = useNavigate();
 
   const goals = [
-    { id: "track", label: "Theo Dõi Chi Tiêu", icon: TrendingDown, description: "Xem tiền đi đâu" },
-    { id: "save", label: "Tiết Kiệm Tiền", icon: PiggyBank, description: "Xây dựng thói quen tiết kiệm" },
-    { id: "family", label: "Ngân Sách Gia Đình", icon: Users, description: "Quản lý chi tiêu hộ gia đình" },
-    { id: "avoid", label: "Tránh Chi Tiêu Quá Mức", icon: ShieldAlert, description: "Giữ trong giới hạn" },
+    { id: "track", label: "Biết mình tiêu bao nhiêu", icon: TrendingDown, description: "Theo dõi dòng tiền hàng ngày" },
+    { id: "save", label: "Tiết kiệm nhiều hơn", icon: PiggyBank, description: "Tích trữ cho tương lai" },
+    { id: "family", label: "Quản lí thu chi gia đình", icon: Users, description: "Cân đối tài chính tổ ấm" },
+    { id: "avoid", label: "Tránh tiêu quá tay", icon: ShieldAlert, description: "Giữ kỷ luật tài chính" },
   ];
 
   return (
@@ -19,8 +19,9 @@ export default function OnboardingGoal() {
           <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
           <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
           <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
+          <div className="flex-1 h-2 bg-gray-200 rounded-full"></div>
         </div>
-        <h1 className="text-2xl mb-2">Mục Tiêu Chính Của Bạn?</h1>
+        <h1 className="text-2xl mb-2 font-bold">Mục tiêu chính của bạn là gì?</h1>
         <p className="text-muted-foreground text-lg">Chọn điều quan trọng nhất với bạn</p>
       </div>
 

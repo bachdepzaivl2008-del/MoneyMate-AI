@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import OnboardingStart from "./screens/OnboardingStart";
@@ -14,6 +14,9 @@ import Settings from "./screens/Settings";
 import Profile from "./screens/Profile";
 import Notifications from "./screens/Notifications";
 import Wallets from "./screens/Wallets";
+import Goals from "./screens/Goals";
+import AIInsights from "./screens/AIInsights";
+import RecurringTransactions from "./screens/RecurringTransactions";
 import AppLayout from "./components/AppLayout";
 
 export const router = createBrowserRouter([
@@ -24,6 +27,10 @@ export const router = createBrowserRouter([
   {
     path: "/signup",
     Component: Signup,
+  },
+  {
+    path: "/onboarding",
+    element: <Navigate to="/onboarding/start" replace />,
   },
   {
     path: "/onboarding/start",
@@ -54,6 +61,9 @@ export const router = createBrowserRouter([
       { path: "history", Component: TransactionHistory },
       { path: "budgets", Component: Budgets },
       { path: "wallets", Component: Wallets },
+      { path: "goals", Component: Goals },
+      { path: "insights", Component: AIInsights },
+      { path: "recurring", Component: RecurringTransactions },
       { path: "settings", Component: Settings },
       { path: "profile", Component: Profile },
       { path: "notifications", Component: Notifications },

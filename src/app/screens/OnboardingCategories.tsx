@@ -30,7 +30,14 @@ export default function OnboardingCategories() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl mb-2">Chọn Danh Mục</h1>
+        <div className="flex items-center gap-2 mb-6">
+          <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
+          <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
+          <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
+          <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
+          <div className="flex-1 h-2 bg-blue-600 rounded-full"></div>
+        </div>
+        <h1 className="text-2xl mb-2 font-bold">Chọn Danh Mục</h1>
         <p className="text-muted-foreground text-lg">
           Chọn danh mục chi tiêu bạn dùng nhiều nhất
         </p>
