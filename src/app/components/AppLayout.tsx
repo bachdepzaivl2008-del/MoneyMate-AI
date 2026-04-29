@@ -2,10 +2,18 @@ import { Outlet } from "react-router";
 import { TopBar } from "./layout/TopBar";
 import { BottomNav } from "./layout/BottomNav";
 import { Sidebar } from "./layout/Sidebar";
+import { useAppStore } from "../store/useAppStore";
 
 export default function AppLayout() {
+  const { settings } = useAppStore();
+
+  const fontSizeClass = 
+    settings.fontSize === "large" ? "text-lg" : 
+    settings.fontSize === "xlarge" ? "text-xl" : "text-base";
+  const simpleModeClass = settings.simpleMode ? "simple-mode" : "";
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row relative w-full h-full overflow-hidden">
+    <div className={`min-h-screen flex flex-col md:flex-row relative w-full h-full overflow-hidden transition-all bg-background text-foreground ${fontSizeClass} ${simpleModeClass}`}>
       <Sidebar />
       <div className="md:hidden">
         <TopBar />

@@ -18,14 +18,15 @@ export default function Dashboard() {
   const {
     getTotalBalance, getMonthlyIncome, getMonthlyExpenses,
     getRecentTransactions, budgets, getSpentByCategory,
-    savingsGoals,
+    savingsGoals, settings,
   } = useAppStore();
 
   const totalBalance = getTotalBalance();
   const monthlyIncome = getMonthlyIncome();
   const monthlyExpenses = getMonthlyExpenses();
-  const recentTxs = getRecentTransactions(3);
-  const topGoals = savingsGoals.slice(0, 2);
+  const simpleMode = settings.simpleMode;
+  const recentTxs = getRecentTransactions(simpleMode ? 2 : 3);
+  const topGoals = savingsGoals.slice(0, simpleMode ? 1 : 2);
 
   const formatMoney = (n: number) => {
     if (Math.abs(n) >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "tr";
@@ -40,31 +41,41 @@ export default function Dashboard() {
       {/* Top Section - Balance & Stats */}
       <div className="space-y-6">
         {/* Balance Card */}
-        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 lg:p-8 text-white shadow-md">
-          <div className="text-sm opacity-90 mb-2 font-medium">Số Dư Hiện Tại</div>
-          <div className="text-4xl lg:text-6xl mb-4 font-semibold tracking-tight">
+        <div className={`bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 lg:p-8 text-white shadow-md ${simpleMode ? "text-center" : ""}`}>
+          <div className={`${simpleMode ? "text-lg" : "text-sm"} opacity-90 mb-2 font-medium`}>Số Dư Hiện Tại</div>
+          <div className={`${simpleMode ? "text-5xl lg:text-7xl" : "text-4xl lg:text-6xl"} mb-4 font-semibold tracking-tight`}>
             {formatFull(totalBalance)}
           </div>
-          <div className="flex items-center gap-2 text-sm bg-white/20 w-fit px-4 py-1.5 rounded-full backdrop-blur-sm">
-            <TrendingUp className="w-4 h-4" />
-            <span>Thu nhập tháng: {formatMoney(monthlyIncome)}₫</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 text-sm bg-white/20 w-fit px-4 py-1.5 rounded-full backdrop-blur-sm">
+              <TrendingUp className="w-4 h-4" />
+              <span>Thu nhập tháng: {formatMoney(monthlyIncome)}₫</span>
+            </div>
+            <button
+              onClick={() => navigate("/app/reports")}
+              className="flex items-center gap-2 text-sm bg-white text-blue-600 font-semibold w-fit px-4 py-1.5 rounded-full shadow hover:bg-slate-50 transition-colors"
+            >
+              <span>Xem Báo Cáo</span>
+            </button>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-4 lg:gap-8">
-          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-white">
-            <div className="text-green-600 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(monthlyIncome)}</div>
+        <div className={`grid ${simpleMode ? "grid-cols-2" : "grid-cols-3"} gap-4 lg:gap-8`}>
+          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-card">
+            <div className={`text-green-600 dark:text-green-400 ${simpleMode ? "text-3xl" : "text-2xl lg:text-3xl"} font-bold mb-1`}>{formatMoney(monthlyIncome)}</div>
             <div className="text-sm text-muted-foreground font-medium">Thu Nhập</div>
           </Card>
-          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-white">
-            <div className="text-red-600 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(monthlyExpenses)}</div>
+          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-card">
+            <div className={`text-red-600 dark:text-red-400 ${simpleMode ? "text-3xl" : "text-2xl lg:text-3xl"} font-bold mb-1`}>{formatMoney(monthlyExpenses)}</div>
             <div className="text-sm text-muted-foreground font-medium">Chi Tiêu</div>
           </Card>
-          <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-white">
-            <div className="text-blue-600 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(totalBalance)}</div>
-            <div className="text-sm text-muted-foreground font-medium">Tổng Tài Sản</div>
-          </Card>
+          {!simpleMode && (
+            <Card className="border-border shadow-sm p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-card">
+              <div className="text-blue-600 dark:text-blue-400 text-2xl lg:text-3xl font-bold mb-1">{formatMoney(totalBalance)}</div>
+              <div className="text-sm text-muted-foreground font-medium">Tổng Tài Sản</div>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -83,7 +94,7 @@ export default function Dashboard() {
           />
           <div className="space-y-3">
             {recentTxs.length === 0 && (
-              <Card className="p-8 border-slate-100 shadow-sm text-center text-slate-400 text-sm">
+              <Card className="p-8 border-border shadow-sm text-center text-muted-foreground text-sm">
                 Chưa có giao dịch nào
               </Card>
             )}
@@ -91,15 +102,15 @@ export default function Dashboard() {
               const Icon = categoryIcons[tx.category] || ShoppingBag;
               const isIncome = tx.type === "income";
               return (
-                <Card key={tx.id} className="p-4 border-slate-100 flex items-center gap-3 shadow-sm">
-                  <div className={`w-12 h-12 ${isIncome ? "bg-green-50" : "bg-slate-50"} border border-slate-100 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Icon className={`w-5 h-5 ${isIncome ? "text-green-600" : "text-slate-600"}`} />
+                <Card key={tx.id} className="p-4 border-border flex items-center gap-3 shadow-sm bg-card hover:bg-muted/50 transition-colors">
+                  <div className={`w-12 h-12 ${isIncome ? "bg-green-50 dark:bg-green-500/10" : "bg-muted"} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <Icon className={`w-5 h-5 ${isIncome ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-800 mb-0.5">{tx.title}</div>
-                    <div className="text-xs text-slate-500">{tx.category} • {tx.date}</div>
+                    <div className="text-sm font-medium text-foreground mb-0.5">{tx.title}</div>
+                    <div className="text-xs text-muted-foreground">{tx.category} • {tx.date}</div>
                   </div>
-                  <div className={`font-semibold text-sm ${isIncome ? "text-green-600" : "text-red-600"}`}>
+                  <div className={`font-semibold text-sm ${isIncome ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
                     {isIncome ? "+" : ""}{formatFull(tx.amount)}
                   </div>
                 </Card>
@@ -125,16 +136,16 @@ export default function Dashboard() {
               const percentage = budget.limit > 0 ? (spent / budget.limit) * 100 : 0;
               const isWarning = percentage > 80;
               return (
-                <Card key={budget.id} className="p-4 border-slate-100 shadow-sm">
+                <Card key={budget.id} className="p-4 border-border shadow-sm bg-card">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-800">{budget.category}</span>
-                    <span className={`text-xs font-semibold ${isWarning ? "text-orange-600" : "text-slate-500"}`}>
+                    <span className="text-sm font-medium text-foreground">{budget.category}</span>
+                    <span className={`text-xs font-semibold ${isWarning ? "text-orange-600 dark:text-orange-400" : "text-muted-foreground"}`}>
                       {formatMoney(spent)} / {formatMoney(budget.limit)}₫
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                     <div
-                      className={`h-full transition-all ${isWarning ? "bg-orange-600" : budget.color}`}
+                      className={`h-full transition-all ${isWarning ? "bg-orange-600 dark:bg-orange-500" : budget.color}`}
                       style={{ width: `${Math.min(percentage, 100)}%` }}
                     />
                   </div>
@@ -160,7 +171,7 @@ export default function Dashboard() {
               {topGoals.map((goal) => {
                 const pct = goal.targetAmount > 0 ? (goal.savedAmount / goal.targetAmount) * 100 : 0;
                 return (
-                  <Card key={goal.id} className="overflow-hidden border-slate-100 shadow-sm">
+                  <Card key={goal.id} className="overflow-hidden border-border shadow-sm">
                     <div className={`bg-gradient-to-r ${goal.color} px-4 py-3 flex items-center gap-3`}>
                       <span className="text-2xl">{goal.icon}</span>
                       <div className="flex-1 min-w-0">
@@ -169,7 +180,7 @@ export default function Dashboard() {
                       </div>
                       <span className="text-white font-bold text-sm">{pct.toFixed(0)}%</span>
                     </div>
-                    <div className="h-1.5 bg-slate-100">
+                    <div className="h-1.5 bg-muted">
                       <div
                         className={`h-full bg-gradient-to-r ${goal.color} transition-all`}
                         style={{ width: `${Math.min(pct, 100)}%` }}

@@ -104,11 +104,11 @@ export default function AddTransaction() {
     return (
       <PageContainer className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center animate-in fade-in">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="w-10 h-10 text-green-600" />
+          <div className="w-20 h-20 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Check className="w-10 h-10 text-green-600 dark:text-green-400" />
           </div>
-          <div className="text-xl font-bold text-slate-900 mb-1">Đã Lưu!</div>
-          <div className="text-sm text-slate-500">Đang chuyển về trang chủ...</div>
+          <div className="text-xl font-bold text-foreground mb-1">Đã Lưu!</div>
+          <div className="text-sm text-muted-foreground">Đang chuyển về trang chủ...</div>
         </div>
       </PageContainer>
     );
@@ -117,21 +117,21 @@ export default function AddTransaction() {
   return (
     <PageContainer className="space-y-6 lg:space-y-8 max-w-xl lg:max-w-4xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Thêm Giao Dịch</h1>
-        <p className="text-slate-500 text-sm">Theo dõi thu nhập hoặc chi tiêu</p>
+        <h1 className="text-2xl font-bold text-foreground mb-1">Thêm Giao Dịch</h1>
+        <p className="text-muted-foreground text-sm">Theo dõi thu nhập hoặc chi tiêu</p>
       </div>
 
       {/* Smart Input Section */}
-      <Card className="p-1 border-blue-100 bg-blue-50/30 overflow-hidden">
-        <div className="flex items-center px-4 py-3 bg-white">
+      <Card className="p-1 border-blue-100 bg-blue-50/30 dark:border-blue-900 dark:bg-blue-900/10 overflow-hidden">
+        <div className="flex items-center px-4 py-3 bg-card rounded-lg">
           <input
             type="text"
             value={smartInput}
             onChange={(e) => handleSmartInput(e.target.value)}
-            className="flex-1 bg-transparent border-none focus:outline-none text-slate-700 placeholder:text-slate-400 font-medium"
+            className="flex-1 bg-transparent border-none focus:outline-none text-foreground placeholder:text-muted-foreground font-medium"
             placeholder="Nhập nhanh: ăn sáng 35k, đổ xăng 100k..."
           />
-          <div className="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm">AI Active</div>
+          <div className="bg-blue-600 dark:bg-blue-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm">AI Active</div>
         </div>
       </Card>
 
@@ -142,7 +142,7 @@ export default function AddTransaction() {
           className={`h-14 rounded-xl transition-all font-medium ${
             transactionType === "expense"
               ? "bg-red-600 text-white shadow-md"
-              : "bg-white border-2 border-slate-200 text-slate-700"
+              : "bg-background border-2 border-border text-foreground"
           }`}
         >
           Chi Tiêu
@@ -152,7 +152,7 @@ export default function AddTransaction() {
           className={`h-14 rounded-xl transition-all font-medium ${
             transactionType === "income"
               ? "bg-green-600 text-white shadow-md"
-              : "bg-white border-2 border-slate-200 text-slate-700"
+              : "bg-background border-2 border-border text-foreground"
           }`}
         >
           Thu Nhập
@@ -163,15 +163,15 @@ export default function AddTransaction() {
         {/* Left Column */}
         <div className="space-y-6">
           {/* Amount */}
-          <Card className="p-6 border-slate-100 shadow-sm">
-            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Số Tiền</label>
+          <Card className="p-6 border-border bg-card shadow-sm">
+            <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Số Tiền</label>
             <div className="relative mb-4">
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 text-3xl text-slate-300">₫</span>
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 text-3xl text-muted-foreground/50">₫</span>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full text-4xl pl-8 bg-transparent focus:outline-none font-semibold text-slate-900"
+                className="w-full text-4xl pl-8 bg-transparent focus:outline-none font-semibold text-foreground"
                 placeholder="0"
                 step="1000"
               />
@@ -184,7 +184,7 @@ export default function AddTransaction() {
                   className={`px-3 h-9 rounded-lg text-xs font-medium transition-all ${
                     amount === q.toString()
                       ? "bg-blue-600 text-white shadow-sm"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      : "bg-muted text-foreground hover:bg-accent"
                   }`}
                 >
                   {q >= 1_000_000 ? (q / 1_000_000) + "tr" : (q / 1000) + "k"}
@@ -195,19 +195,19 @@ export default function AddTransaction() {
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Mô Tả</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Mô Tả</label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-14 px-4 bg-white border border-slate-200 rounded-xl focus:border-blue-600 focus:outline-none transition-colors text-sm"
+              className="w-full h-14 px-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none transition-colors text-sm"
               placeholder="Dùng để làm gì?"
             />
           </div>
 
           {/* Wallet Selector */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Chọn Ví</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Chọn Ví</label>
             <div className="grid grid-cols-2 gap-2">
               {wallets.map((w) => (
                 <button
@@ -215,14 +215,14 @@ export default function AddTransaction() {
                   onClick={() => setSelectedWalletId(w.id)}
                   className={`h-14 px-4 rounded-xl flex items-center gap-3 transition-all text-left ${
                     selectedWalletId === w.id
-                      ? "bg-blue-50 border-2 border-blue-600 text-blue-700"
-                      : "bg-white border border-slate-200 text-slate-700 hover:border-blue-400"
+                      ? "bg-blue-50 border-2 border-blue-600 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+                      : "bg-background border border-border text-foreground hover:border-blue-400"
                   }`}
                 >
                   <span className="text-xl">{w.icon}</span>
                   <div className="min-w-0">
                     <div className="text-sm font-medium truncate">{w.name}</div>
-                    <div className="text-xs text-slate-500">{w.balance.toLocaleString("vi-VN")}₫</div>
+                    <div className="text-xs text-muted-foreground">{w.balance.toLocaleString("vi-VN")}₫</div>
                   </div>
                 </button>
               ))}
@@ -234,7 +234,7 @@ export default function AddTransaction() {
         <div className="space-y-6">
           {/* Category */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Danh Mục</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Danh Mục</label>
             {transactionType === "expense" ? (
               <div className="grid grid-cols-4 gap-3">
                 {categories.map((cat) => {
@@ -247,10 +247,10 @@ export default function AddTransaction() {
                       className={`aspect-square rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-2 ${
                         isSelected
                           ? "bg-blue-600 border-blue-600 text-white shadow-md"
-                          : "bg-white border-slate-200 hover:border-blue-400 text-slate-600"
+                          : "bg-background border-border hover:border-blue-400 text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      <Icon className="w-6 h-6" />
+                      <Icon className={`w-6 h-6 ${isSelected ? "text-white" : "text-blue-500 dark:text-blue-400"}`} />
                       <span className="text-xs font-medium">{cat.label}</span>
                     </button>
                   );
@@ -265,7 +265,7 @@ export default function AddTransaction() {
                     className={`h-14 rounded-xl border-2 transition-all font-medium text-sm ${
                       selectedCategory === cat.id
                         ? "bg-green-600 border-green-600 text-white shadow-md"
-                        : "bg-white border-slate-200 hover:border-green-400 text-slate-600"
+                        : "bg-background border-border hover:border-green-400 text-foreground"
                     }`}
                   >
                     {cat.label}
@@ -277,27 +277,27 @@ export default function AddTransaction() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Ghi Chú</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Ghi Chú</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full h-24 px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-blue-600 focus:outline-none transition-colors resize-none text-sm"
+              className="w-full h-24 px-4 py-3 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none transition-colors resize-none text-sm"
               placeholder="Thêm chi tiết (không bắt buộc)..."
             />
           </div>
 
           {/* Actions */}
-          <div className="space-y-3 pt-4 border-t border-slate-200">
+          <div className="space-y-3 pt-4 border-t border-border">
             <button
               onClick={handleSave}
               disabled={!amount || !description || !selectedCategory || !selectedWalletId}
-              className="w-full h-14 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed shadow-md"
+              className="w-full h-14 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed shadow-md"
             >
               Lưu Giao Dịch
             </button>
             <button
               onClick={() => navigate("/app")}
-              className="w-full h-14 bg-white border-2 border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-colors"
+              className="w-full h-14 bg-background border-2 border-border text-foreground font-medium rounded-xl hover:bg-muted transition-colors"
             >
               Hủy
             </button>

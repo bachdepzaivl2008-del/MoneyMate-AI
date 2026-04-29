@@ -1,15 +1,15 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
-import OnboardingStart from "./screens/OnboardingStart";
-import OnboardingGoal from "./screens/OnboardingGoal";
-import OnboardingMode from "./screens/OnboardingMode";
+import OnboardingQuiz from "./screens/OnboardingQuiz";
+import OnboardingResult from "./screens/OnboardingResult";
 import OnboardingWallet from "./screens/OnboardingWallet";
 import OnboardingCategories from "./screens/OnboardingCategories";
 import Dashboard from "./screens/Dashboard";
 import AddTransaction from "./screens/AddTransaction";
 import TransactionHistory from "./screens/TransactionHistory";
 import Budgets from "./screens/Budgets";
+import Reports from "./screens/Reports";
 import Settings from "./screens/Settings";
 import Profile from "./screens/Profile";
 import Notifications from "./screens/Notifications";
@@ -30,19 +30,15 @@ export const router = createBrowserRouter([
   },
   {
     path: "/onboarding",
-    element: <Navigate to="/onboarding/start" replace />,
+    element: <Navigate to="/onboarding/quiz" replace />,
   },
   {
-    path: "/onboarding/start",
-    Component: OnboardingStart,
+    path: "/onboarding/quiz",
+    Component: OnboardingQuiz,
   },
   {
-    path: "/onboarding/goal",
-    Component: OnboardingGoal,
-  },
-  {
-    path: "/onboarding/mode",
-    Component: OnboardingMode,
+    path: "/onboarding/result",
+    Component: OnboardingResult,
   },
   {
     path: "/onboarding/wallet",
@@ -57,6 +53,7 @@ export const router = createBrowserRouter([
     Component: AppLayout,
     children: [
       { index: true, Component: Dashboard },
+      { path: "reports", Component: Reports },
       { path: "add", Component: AddTransaction },
       { path: "history", Component: TransactionHistory },
       { path: "budgets", Component: Budgets },

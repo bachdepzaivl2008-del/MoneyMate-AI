@@ -20,8 +20,8 @@ export default function AIInsights() {
       type: "warning",
       action: "Bạn có thể đặt giới hạn 100.000đ/ngày cho nhóm ăn uống",
       icon: TrendingUp,
-      color: "text-orange-600",
-      bg: "bg-orange-50",
+      color: "text-orange-600 dark:text-orange-400",
+      bg: "bg-orange-50 dark:bg-orange-500/10",
     },
     {
       id: 2,
@@ -30,8 +30,8 @@ export default function AIInsights() {
       type: "info",
       action: "Cân nhắc chuẩn bị bữa tối tại nhà vào Thứ 7 tới",
       icon: Calendar,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
+      color: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-50 dark:bg-blue-500/10",
     },
     {
       id: 3,
@@ -40,8 +40,8 @@ export default function AIInsights() {
       type: "success",
       action: "Tiếp tục duy trì phong độ này nhé",
       icon: CheckCircle2,
-      color: "text-green-600",
-      bg: "bg-green-50",
+      color: "text-green-600 dark:text-green-400",
+      bg: "bg-green-50 dark:bg-green-500/10",
     },
   ];
 
@@ -49,14 +49,14 @@ export default function AIInsights() {
     <PageContainer className="space-y-6 lg:space-y-8 max-w-xl lg:max-w-4xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">AI Insights</h1>
-          <p className="text-slate-500 text-sm">Phân tích tài chính thông minh</p>
+          <h1 className="text-2xl font-bold text-foreground mb-1">AI Insights</h1>
+          <p className="text-muted-foreground text-sm">Phân tích tài chính thông minh</p>
         </div>
-        <div className="flex bg-slate-100 p-1 rounded-xl">
+        <div className="flex bg-muted p-1 rounded-xl">
           <button
             onClick={() => setTimeRange("week")}
             className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              timeRange === "week" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500"
+              timeRange === "week" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Tuần
@@ -64,7 +64,7 @@ export default function AIInsights() {
           <button
             onClick={() => setTimeRange("month")}
             className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              timeRange === "month" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500"
+              timeRange === "month" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Tháng
@@ -104,18 +104,18 @@ export default function AIInsights() {
         {insights.map((insight) => {
           const Icon = insight.icon;
           return (
-            <Card key={insight.id} className="p-5 border-slate-100 shadow-sm hover:shadow-md transition-all group cursor-pointer">
+            <Card key={insight.id} className="p-5 border-border bg-card shadow-sm hover:shadow-md transition-all group cursor-pointer">
               <div className="flex gap-4">
                 <div className={`w-12 h-12 ${insight.bg} rounded-2xl flex items-center justify-center flex-shrink-0`}>
                   <Icon className={`w-6 h-6 ${insight.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-bold text-slate-900 text-sm">{insight.title}</h3>
-                    {insight.type === "warning" && <AlertCircle className="w-4 h-4 text-orange-500" />}
+                    <h3 className="font-bold text-foreground text-sm">{insight.title}</h3>
+                    {insight.type === "warning" && <AlertCircle className="w-4 h-4 text-orange-500 dark:text-orange-400" />}
                   </div>
-                  <p className="text-slate-600 text-sm mb-3">{insight.description}</p>
-                  <div className={`p-3 rounded-xl ${insight.bg}/50 border border-${insight.color.split("-")[1]}-100 flex items-center justify-between group-hover:border-${insight.color.split("-")[1]}-300 transition-colors`}>
+                  <p className="text-muted-foreground text-sm mb-3">{insight.description}</p>
+                  <div className={`p-3 rounded-xl ${insight.bg} border border-border group-hover:border-blue-400/50 transition-colors flex items-center justify-between`}>
                     <span className={`text-xs font-medium ${insight.color}`}>{insight.action}</span>
                     <ArrowRight className={`w-3 h-3 ${insight.color}`} />
                   </div>
@@ -127,9 +127,9 @@ export default function AIInsights() {
       </div>
 
       {/* Tip of the day */}
-      <Card className="p-4 bg-slate-50 border-dashed border-slate-200 flex items-center gap-3">
+      <Card className="p-4 bg-muted border-dashed border-border flex items-center gap-3">
         <div className="text-xl">💡</div>
-        <p className="text-xs text-slate-500 italic">
+        <p className="text-xs text-muted-foreground italic">
           Tip: Ghi chép giao dịch ngay khi nó phát sinh giúp bạn quản lý tài chính chính xác hơn 90%.
         </p>
       </Card>

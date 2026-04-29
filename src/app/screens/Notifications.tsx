@@ -74,10 +74,10 @@ export default function Notifications() {
   ]);
 
   const iconMap: Record<NotificationType, { icon: React.ElementType; color: string; bg: string }> = {
-    warning: { icon: AlertCircle, color: "text-orange-600", bg: "bg-orange-100" },
-    success: { icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
-    reminder: { icon: Calendar, color: "text-blue-600", bg: "bg-blue-100" },
-    info: { icon: Info, color: "text-slate-500", bg: "bg-slate-100" },
+    warning: { icon: AlertCircle, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-100 dark:bg-orange-500/10" },
+    success: { icon: CheckCircle2, color: "text-green-600 dark:text-green-400", bg: "bg-green-100 dark:bg-green-500/10" },
+    reminder: { icon: Calendar, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-100 dark:bg-blue-500/10" },
+    info: { icon: Info, color: "text-muted-foreground", bg: "bg-muted" },
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -104,8 +104,8 @@ export default function Notifications() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">Thông Báo</h1>
-          <p className="text-slate-500 text-sm">
+          <h1 className="text-2xl font-bold text-foreground mb-1">Thông Báo</h1>
+          <p className="text-muted-foreground text-sm">
             {unreadCount > 0 ? `${unreadCount} thông báo chưa đọc` : "Tất cả đã đọc"}
           </p>
         </div>
@@ -120,21 +120,21 @@ export default function Notifications() {
           )}
           <button
             onClick={() => navigate("/app/settings")}
-            className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center hover:bg-slate-200 transition-colors"
+            className="w-9 h-9 bg-muted rounded-xl flex items-center justify-center hover:bg-muted/80 transition-colors"
           >
-            <Settings className="w-4 h-4 text-slate-600" />
+            <Settings className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
       </div>
 
       {/* Empty State */}
       {notifications.length === 0 && (
-        <Card className="p-12 border-slate-100 shadow-sm flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-            <BellOff className="w-8 h-8 text-slate-400" />
+        <Card className="p-12 border-border bg-card shadow-sm flex flex-col items-center text-center">
+          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+            <BellOff className="w-8 h-8 text-muted-foreground" />
           </div>
-          <div className="text-slate-700 font-semibold mb-1">Không có thông báo</div>
-          <div className="text-slate-400 text-sm">Bạn đã xử lý hết rồi!</div>
+          <div className="text-foreground font-semibold mb-1">Không có thông báo</div>
+          <div className="text-muted-foreground text-sm">Bạn đã xử lý hết rồi!</div>
         </Card>
       )}
 
@@ -156,7 +156,7 @@ export default function Notifications() {
               return (
                 <Card
                   key={notif.id}
-                  className="p-4 border-blue-100 bg-blue-50/30 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                  className="p-4 border-blue-200 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-900/10 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => markRead(notif.id)}
                 >
                   <div className="flex items-start gap-3">
@@ -165,17 +165,17 @@ export default function Notifications() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-sm font-semibold text-slate-900">{notif.title}</span>
+                        <span className="text-sm font-semibold text-foreground">{notif.title}</span>
                         <button
                           onClick={(e) => { e.stopPropagation(); deleteNotification(notif.id); }}
-                          className="text-slate-300 hover:text-red-400 transition-colors flex-shrink-0"
+                          className="text-muted-foreground/50 hover:text-red-400 transition-colors flex-shrink-0"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed mb-2">{notif.message}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed mb-2">{notif.message}</p>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-slate-400">{notif.time}</span>
+                        <span className="text-xs text-muted-foreground/70">{notif.time}</span>
                         <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                       </div>
                     </div>
@@ -197,7 +197,7 @@ export default function Notifications() {
               return (
                 <Card
                   key={notif.id}
-                  className="p-4 border-slate-100 shadow-sm opacity-70 hover:opacity-100 transition-opacity"
+                  className="p-4 border-border bg-card shadow-sm opacity-70 hover:opacity-100 transition-opacity"
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 ${bg} rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5`}>
@@ -205,16 +205,16 @@ export default function Notifications() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-sm font-medium text-slate-700">{notif.title}</span>
+                        <span className="text-sm font-medium text-foreground">{notif.title}</span>
                         <button
                           onClick={() => deleteNotification(notif.id)}
-                          className="text-slate-300 hover:text-red-400 transition-colors flex-shrink-0"
+                          className="text-muted-foreground/50 hover:text-red-400 transition-colors flex-shrink-0"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-slate-500 leading-relaxed mb-1">{notif.message}</p>
-                      <span className="text-xs text-slate-400">{notif.time}</span>
+                      <p className="text-xs text-muted-foreground leading-relaxed mb-1">{notif.message}</p>
+                      <span className="text-xs text-muted-foreground/70">{notif.time}</span>
                     </div>
                   </div>
                 </Card>
@@ -225,15 +225,15 @@ export default function Notifications() {
       )}
 
       {/* Notification Preferences CTA */}
-      <Card className="p-4 border-slate-100 shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50">
+      <Card className="p-4 border-border shadow-sm bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
               <Bell className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-800">Tùy Chỉnh Thông Báo</div>
-              <div className="text-xs text-slate-500">Chọn loại thông báo bạn muốn nhận</div>
+              <div className="text-sm font-semibold text-foreground">Tùy Chỉnh Thông Báo</div>
+              <div className="text-xs text-muted-foreground">Chọn loại thông báo bạn muốn nhận</div>
             </div>
           </div>
           <button

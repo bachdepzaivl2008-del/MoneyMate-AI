@@ -15,6 +15,7 @@ export function Sidebar() {
   ];
 
   const analysisTabs = [
+    { id: "reports", label: "Báo Cáo", icon: Target, path: "/app/reports" },
     { id: "insights", label: "AI Insights", icon: Brain, path: "/app/insights" },
     { id: "recurring", label: "Lịch Định Kỳ", icon: Repeat, path: "/app/recurring" },
   ];
@@ -46,8 +47,8 @@ export function Sidebar() {
           isAdd
             ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md my-1"
             : active
-            ? "bg-blue-50 text-blue-600"
-            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+            ? "bg-blue-50/10 text-blue-500 dark:text-blue-400"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground"
         }`}
       >
         <Icon className="w-5 h-5 flex-shrink-0" />
@@ -57,9 +58,9 @@ export function Sidebar() {
   };
 
   return (
-    <div className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-screen flex-shrink-0">
+    <div className="hidden md:flex flex-col w-64 bg-background border-r border-border h-screen flex-shrink-0">
       {/* Brand / Logo */}
-      <div className="p-6 flex items-center gap-3 border-b border-slate-100">
+      <div className="p-6 flex items-center gap-3 border-b border-border">
         <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
           <Wallet className="w-6 h-6 text-white" />
         </div>
@@ -71,21 +72,21 @@ export function Sidebar() {
       {/* Main Navigation */}
       <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
         <div className="px-2 mb-2">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Chính</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Chính</span>
         </div>
         {mainTabs.map((tab) => (
           <NavButton key={tab.id} tab={tab} isAdd={tab.id === "add"} />
         ))}
 
         <div className="px-2 pt-4 mb-2">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Phân tích & Tự động</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phân tích & Tự động</span>
         </div>
         {analysisTabs.map((tab) => (
           <NavButton key={tab.id} tab={tab} />
         ))}
 
         <div className="px-2 pt-4 mb-2">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cài Đặt</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cài Đặt</span>
         </div>
         {secondaryTabs.map((tab) => (
           <NavButton key={tab.id} tab={tab} />
@@ -93,21 +94,21 @@ export function Sidebar() {
       </div>
 
       {/* User Profile */}
-      <div className="p-3 border-t border-slate-100">
+      <div className="p-3 border-t border-border">
         <button
           onClick={() => navigate("/app/profile")}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors ${
-            isActive("/app/profile") ? "bg-blue-50 text-blue-600" : ""
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted cursor-pointer transition-colors ${
+            isActive("/app/profile") ? "bg-blue-50/10 text-blue-500 dark:text-blue-400" : ""
           }`}
         >
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex-shrink-0 flex items-center justify-center font-bold text-white text-sm shadow-sm">
             A
           </div>
           <div className="flex-1 min-w-0 text-left">
-            <div className="text-sm font-semibold text-slate-900 truncate">Nguyễn Văn A</div>
-            <div className="text-xs text-slate-500 truncate">Xem hồ sơ</div>
+            <div className="text-sm font-semibold text-foreground truncate">Nguyễn Văn A</div>
+            <div className="text-xs text-muted-foreground truncate">Xem hồ sơ</div>
           </div>
-          <User className="w-4 h-4 text-slate-400 flex-shrink-0" />
+          <User className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         </button>
       </div>
     </div>

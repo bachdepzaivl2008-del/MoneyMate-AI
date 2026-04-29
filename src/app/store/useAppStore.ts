@@ -43,6 +43,18 @@ export interface SavingsGoal {
   createdAt: string;
 }
 
+export interface AppSettings {
+  theme: "light" | "dark";
+  fontSize: "normal" | "large" | "xlarge";
+  simpleMode: boolean;
+  currency: string;
+  notifications: boolean;
+  budgetAlerts: boolean;
+  userPersona?: "student" | "professional" | "investor" | "hustler" | "entrepreneur" | "family" | "senior";
+  userGoal?: string;
+  interfaceMode?: "simple" | "standard" | "expert";
+}
+
 // ─── Store Interface ─────────────────────────────────────
 
 interface AppState {
@@ -51,6 +63,11 @@ interface AppState {
   transactions: Transaction[];
   budgets: Budget[];
   savingsGoals: SavingsGoal[];
+  settings: AppSettings;
+
+  // Settings actions
+  updateSettings: (updates: Partial<AppSettings>) => void;
+  resetStore: () => void;
 
   // Wallet actions
   addWallet: (wallet: Omit<Wallet, "id">) => void;
@@ -71,6 +88,7 @@ interface AppState {
   updateSavingsGoal: (id: string, updates: Partial<SavingsGoal>) => void;
   deleteSavingsGoal: (id: string) => void;
   depositToGoal: (id: string, amount: number) => void;
+  applyPersonaPresets: () => void;
 
   // Computed helpers
   getWalletById: (id: string) => Wallet | undefined;
@@ -152,6 +170,15 @@ const defaultSavingsGoals: SavingsGoal[] = [
   },
 ];
 
+const defaultSettings: AppSettings = {
+  theme: "light",
+  fontSize: "normal",
+  simpleMode: false,
+  currency: "VND",
+  notifications: true,
+  budgetAlerts: true,
+};
+
 // ─── Store ───────────────────────────────────────────────
 
 export const useAppStore = create<AppState>()(
@@ -161,6 +188,22 @@ export const useAppStore = create<AppState>()(
       transactions: defaultTransactions,
       budgets: defaultBudgets,
       savingsGoals: defaultSavingsGoals,
+      settings: defaultSettings,
+
+      // ── Settings Actions ──
+      updateSettings: (updates) =>
+        set((s) => ({
+          settings: { ...s.settings, ...updates },
+        })),
+
+      resetStore: () =>
+        set(() => ({
+          wallets: [],
+          transactions: [],
+          budgets: [],
+          savingsGoals: [],
+          settings: defaultSettings,
+        })),
 
       // ── Wallet Actions ──
       addWallet: (wallet) =>
@@ -250,6 +293,89 @@ export const useAppStore = create<AppState>()(
               : g
           ),
         })),
+
+      applyPersonaPresets: () => {
+        const { settings } = get();
+        const persona = settings.userPersona;
+
+        let budgets: Budget[] = [];
+        let goals: SavingsGoal[] = [];
+
+        // Simple presets based on 7 Personas
+        if (persona === "student") {
+          budgets = [
+            { id: uid(), category: "Ăn Uống", limit: 3000000, color: "bg-orange-500" },
+            { id: uid(), category: "Học Tập", limit: 1000000, color: "bg-blue-500" },
+            { id: uid(), category: "Giải Trí", limit: 1000000, color: "bg-purple-500" },
+          ];
+          goals = [
+            { id: uid(), name: "Mua Laptop mới", targetAmount: 20000000, savedAmount: 0, icon: "💻", color: "from-blue-500 to-indigo-600", createdAt: new Date().toISOString() }
+          ];
+        } else if (persona === "professional") {
+          budgets = [
+            { id: uid(), category: "Cố Định (50%)", limit: 10000000, color: "bg-teal-500" },
+            { id: uid(), category: "Linh Hoạt (30%)", limit: 6000000, color: "bg-emerald-500" },
+            { id: uid(), category: "Tiết Kiệm (20%)", limit: 4000000, color: "bg-blue-600" },
+          ];
+          goals = [
+            { id: uid(), name: "Mua Nhà", targetAmount: 1000000000, savedAmount: 50000000, icon: "🏠", color: "from-emerald-400 to-teal-500", createdAt: new Date().toISOString() }
+          ];
+        } else if (persona === "investor") {
+          budgets = [
+            { id: uid(), category: "Sinh Hoạt", limit: 10000000, color: "bg-slate-600" },
+            { id: uid(), category: "Quỹ Đầu Tư (Chứng khoán)", limit: 15000000, color: "bg-purple-600" },
+          ];
+          goals = [
+            { id: uid(), name: "Đạt Tự Do Tài Chính", targetAmount: 5000000000, savedAmount: 500000000, icon: "🚀", color: "from-purple-500 to-fuchsia-600", createdAt: new Date().toISOString() }
+          ];
+        } else if (persona === "hustler") {
+          budgets = [
+            { id: uid(), category: "Chi Phí Tối Thiểu", limit: 8000000, color: "bg-amber-600" },
+            { id: uid(), category: "Thiết Bị & Công Cụ", limit: 3000000, color: "bg-orange-500" },
+          ];
+          goals = [
+            { id: uid(), name: "Quỹ Khẩn Cấp (6 Tháng)", targetAmount: 50000000, savedAmount: 10000000, icon: "🛡️", color: "from-amber-400 to-orange-500", createdAt: new Date().toISOString() }
+          ];
+        } else if (persona === "entrepreneur") {
+          budgets = [
+            { id: uid(), category: "Chi Phí Cá Nhân", limit: 10000000, color: "bg-blue-600" },
+            { id: uid(), category: "Tiền Nhập Hàng", limit: 50000000, color: "bg-red-500" },
+            { id: uid(), category: "Vận Hành & Marketing", limit: 15000000, color: "bg-rose-500" },
+          ];
+          goals = [
+            { id: uid(), name: "Mở Rộng Cửa Hàng", targetAmount: 200000000, savedAmount: 50000000, icon: "🏪", color: "from-rose-400 to-red-500", createdAt: new Date().toISOString() }
+          ];
+        } else if (persona === "family") {
+          budgets = [
+            { id: uid(), category: "Chợ Búa & Siêu Thị", limit: 8000000, color: "bg-pink-500" },
+            { id: uid(), category: "Điện Nước & Hóa Đơn", limit: 3000000, color: "bg-orange-500" },
+            { id: uid(), category: "Giáo Dục (Con cái)", limit: 5000000, color: "bg-rose-600" },
+          ];
+          goals = [
+            { id: uid(), name: "Đại học cho con", targetAmount: 300000000, savedAmount: 20000000, icon: "🎓", color: "from-pink-400 to-rose-500", createdAt: new Date().toISOString() }
+          ];
+        } else if (persona === "senior") {
+          budgets = [
+            { id: uid(), category: "Ăn Uống", limit: 4000000, color: "bg-blue-500" },
+            { id: uid(), category: "Sức Khỏe & Thuốc Men", limit: 3000000, color: "bg-teal-500" },
+            { id: uid(), category: "Quà Cáp Cho Cháu", limit: 2000000, color: "bg-cyan-500" },
+          ];
+          goals = [
+            { id: uid(), name: "Du Lịch Nghỉ Dưỡng", targetAmount: 50000000, savedAmount: 10000000, icon: "🌴", color: "from-cyan-400 to-blue-500", createdAt: new Date().toISOString() }
+          ];
+        } else {
+          // Default fallback
+          budgets = [
+            { id: uid(), category: "Ăn Uống", limit: 5000000, color: "bg-blue-600" },
+            { id: uid(), category: "Mua Sắm", limit: 2000000, color: "bg-green-600" },
+          ];
+        }
+
+        set({
+          budgets,
+          savingsGoals: goals,
+        });
+      },
 
       // ── Computed Helpers ──
       getWalletById: (id) => get().wallets.find((w) => w.id === id),

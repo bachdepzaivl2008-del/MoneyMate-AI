@@ -47,7 +47,7 @@ function GoalCard({
   const isCompleted = percentage >= 100;
 
   return (
-    <Card className="overflow-hidden border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="overflow-hidden border-border bg-card shadow-sm hover:shadow-md transition-shadow">
       {/* Header gradient */}
       <div className={`bg-gradient-to-r ${goal.color} p-5 relative`}>
         {isCompleted && (
@@ -97,11 +97,11 @@ function GoalCard({
       <div className="p-4">
         {!isCompleted && (
           <div className="flex items-center justify-between mb-4">
-            <div className="text-xs text-slate-500">
-              Còn cần <span className="font-semibold text-slate-700">{remaining.toLocaleString("vi-VN")}₫</span>
+            <div className="text-xs text-muted-foreground">
+              Còn cần <span className="font-semibold text-foreground">{remaining.toLocaleString("vi-VN")}₫</span>
             </div>
             {goal.deadline && (
-              <div className="flex items-center gap-1 text-xs text-slate-400">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Calendar className="w-3.5 h-3.5" />
                 {new Date(goal.deadline).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
               </div>
@@ -119,7 +119,7 @@ function GoalCard({
           {!isCompleted && (
             <button
               onClick={onDeposit}
-              className="flex-1 h-10 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 h-10 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
             >
               <TrendingUp className="w-4 h-4" />
               Nạp Tiền
@@ -127,13 +127,13 @@ function GoalCard({
           )}
           <button
             onClick={onEdit}
-            className="h-10 px-4 bg-slate-100 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors"
+            className="h-10 px-4 bg-muted text-foreground rounded-xl text-sm font-medium hover:bg-muted/80 transition-colors"
           >
             Sửa
           </button>
           <button
             onClick={onDelete}
-            className="h-10 px-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors"
+            className="h-10 px-3 bg-destructive/10 text-destructive rounded-xl hover:bg-destructive/20 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -161,8 +161,8 @@ function DepositModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4">
-      <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl">
-        <div className={`bg-gradient-to-r ${goal.color} p-5 rounded-t-3xl flex items-center gap-3`}>
+      <div className="bg-card border border-border rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden">
+        <div className={`bg-gradient-to-r ${goal.color} p-5 flex items-center gap-3`}>
           <span className="text-3xl">{goal.icon}</span>
           <div>
             <div className="text-white font-bold text-base">{goal.name}</div>
@@ -171,14 +171,14 @@ function DepositModal({
         </div>
         <div className="p-5 space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Số Tiền</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Số Tiền</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₫</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₫</span>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full h-12 pl-8 pr-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none text-sm"
+                className="w-full h-12 pl-8 pr-4 bg-background border border-border rounded-xl focus:border-blue-500 focus:outline-none text-sm"
                 placeholder="0"
                 autoFocus
               />
@@ -190,14 +190,14 @@ function DepositModal({
                 <button
                   key={a}
                   onClick={() => setAmount(a.toString())}
-                  className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                  className="px-3 py-1.5 bg-muted text-foreground rounded-lg text-xs font-medium hover:bg-blue-500/10 hover:text-blue-500 transition-colors"
                 >
                   +{formatMoney(a)}
                 </button>
               ))}
               <button
                 onClick={() => setAmount(remaining.toString())}
-                className="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-medium hover:bg-emerald-100 transition-colors"
+                className="px-3 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-medium hover:bg-emerald-500/20 transition-colors"
               >
                 Đủ mục tiêu
               </button>
@@ -207,14 +207,14 @@ function DepositModal({
             <button
               onClick={() => { if (Number(amount) > 0) onConfirm(Number(amount)); }}
               disabled={!amount || Number(amount) <= 0}
-              className="flex-1 h-12 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="flex-1 h-12 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
               Xác Nhận
             </button>
             <button
               onClick={onClose}
-              className="flex-1 h-12 border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+              className="flex-1 h-12 border border-border text-foreground rounded-xl font-medium hover:bg-muted transition-colors"
             >
               Hủy
             </button>
@@ -297,12 +297,12 @@ export default function Goals() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">Mục Tiêu Tiết Kiệm</h1>
-          <p className="text-slate-500 text-sm">Lên kế hoạch và thực hiện ước mơ của bạn</p>
+          <h1 className="text-2xl font-bold text-foreground mb-1">Mục Tiêu Tiết Kiệm</h1>
+          <p className="text-muted-foreground text-sm">Lên kế hoạch và thực hiện ước mơ của bạn</p>
         </div>
         <button
           onClick={() => { resetForm(); setShowForm(true); }}
-          className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-800 transition-colors shadow-md"
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors shadow-md"
         >
           <Plus className="w-4 h-4" />
           Thêm
@@ -350,19 +350,19 @@ export default function Goals() {
 
       {/* Form */}
       {showForm && (
-        <Card className="p-5 border-slate-200 shadow-md">
+        <Card className="p-5 border-border bg-card shadow-md">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-base font-bold text-slate-800">
+            <h3 className="text-base font-bold text-foreground">
               {editingId ? "Chỉnh Sửa Mục Tiêu" : "Tạo Mục Tiêu Mới"}
             </h3>
-            <button onClick={resetForm} className="text-slate-400 hover:text-slate-600">
+            <button onClick={resetForm} className="text-muted-foreground hover:text-foreground">
               <X className="w-5 h-5" />
             </button>
           </div>
           <div className="space-y-4">
             {/* Icon Picker */}
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Biểu Tượng</label>
+              <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Biểu Tượng</label>
               <div className="flex flex-wrap gap-2">
                 {GOAL_ICONS.map((ic) => (
                   <button
@@ -370,8 +370,8 @@ export default function Goals() {
                     onClick={() => setFormIcon(ic)}
                     className={`w-10 h-10 rounded-xl text-xl transition-all ${
                       formIcon === ic
-                        ? "bg-slate-900 shadow-md scale-110"
-                        : "bg-slate-100 hover:bg-slate-200"
+                        ? "bg-blue-600 text-white shadow-md scale-110"
+                        : "bg-muted hover:bg-muted/80 text-foreground"
                     }`}
                   >
                     {ic}
@@ -382,12 +382,12 @@ export default function Goals() {
 
             {/* Name */}
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Tên Mục Tiêu</label>
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Tên Mục Tiêu</label>
               <input
                 type="text"
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
-                className="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-slate-900 focus:outline-none text-sm"
+                className="w-full h-12 px-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none text-sm"
                 placeholder="Ví dụ: Mua iPhone 17..."
               />
             </div>
@@ -395,27 +395,27 @@ export default function Goals() {
             {/* Amounts */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Số Tiền Mục Tiêu</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Số Tiền Mục Tiêu</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₫</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₫</span>
                   <input
                     type="number"
                     value={formTarget}
                     onChange={(e) => setFormTarget(e.target.value)}
-                    className="w-full h-12 pl-8 pr-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-slate-900 focus:outline-none text-sm"
+                    className="w-full h-12 pl-8 pr-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none text-sm"
                     placeholder="10000000"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Đã Tiết Kiệm</label>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Đã Tiết Kiệm</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₫</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₫</span>
                   <input
                     type="number"
                     value={formSaved}
                     onChange={(e) => setFormSaved(e.target.value)}
-                    className="w-full h-12 pl-8 pr-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-slate-900 focus:outline-none text-sm"
+                    className="w-full h-12 pl-8 pr-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none text-sm"
                     placeholder="0"
                   />
                 </div>
@@ -424,25 +424,25 @@ export default function Goals() {
 
             {/* Deadline */}
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Hạn Chót (không bắt buộc)</label>
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Hạn Chót (không bắt buộc)</label>
               <input
                 type="date"
                 value={formDeadline}
                 onChange={(e) => setFormDeadline(e.target.value)}
-                className="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:border-slate-900 focus:outline-none text-sm"
+                className="w-full h-12 px-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none text-sm"
               />
             </div>
 
             {/* Color */}
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Màu Sắc</label>
+              <label className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Màu Sắc</label>
               <div className="flex flex-wrap gap-2">
                 {GOAL_COLORS.map((c) => (
                   <button
                     key={c.value}
                     onClick={() => setFormColor(c.value)}
                     className={`w-10 h-10 rounded-full bg-gradient-to-br ${c.value} transition-all ${
-                      formColor === c.value ? "ring-2 ring-offset-2 ring-slate-400 scale-110" : "opacity-70 hover:opacity-100"
+                      formColor === c.value ? "ring-2 ring-offset-2 ring-foreground scale-110" : "opacity-70 hover:opacity-100"
                     }`}
                     title={c.label}
                   />
@@ -467,12 +467,12 @@ export default function Goals() {
               <button
                 onClick={handleSave}
                 disabled={!formName || !formTarget}
-                className="flex-1 h-12 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 h-12 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Check className="w-4 h-4" />
                 {editingId ? "Cập Nhật" : "Tạo Mục Tiêu"}
               </button>
-              <button onClick={resetForm} className="flex-1 h-12 border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50">
+              <button onClick={resetForm} className="flex-1 h-12 border border-border text-foreground rounded-xl font-medium hover:bg-muted transition-colors">
                 Hủy
               </button>
             </div>
@@ -482,13 +482,13 @@ export default function Goals() {
 
       {/* Goals Grid */}
       {savingsGoals.length === 0 && !showForm ? (
-        <Card className="p-12 border-slate-100 shadow-sm text-center">
+        <Card className="p-12 border-border bg-card shadow-sm text-center">
           <div className="text-5xl mb-4">🐖</div>
-          <div className="text-slate-700 font-semibold mb-2">Chưa có mục tiêu nào</div>
-          <div className="text-slate-400 text-sm mb-6">Đặt ra mục tiêu và bắt đầu tiết kiệm ngay hôm nay!</div>
+          <div className="text-foreground font-semibold mb-2">Chưa có mục tiêu nào</div>
+          <div className="text-muted-foreground text-sm mb-6">Đặt ra mục tiêu và bắt đầu tiết kiệm ngay hôm nay!</div>
           <button
             onClick={() => setShowForm(true)}
-            className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-800"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
           >
             Tạo Mục Tiêu Đầu Tiên
           </button>

@@ -1,3 +1,35 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* Global Settings Modifier Classes */
+.text-lg {
+  zoom: 1.05;
+}
+
+.text-xl {
+  zoom: 1.1;
+}
+
+.simple-mode {
+  zoom: 1.15;
+}
+
+/* Fallback for firefox */
+@-moz-document url-prefix() {
+  .text-lg {
+    transform: scale(1.05);
+    transform-origin: top center;
+    width: 95%;
+  }
+  .text-xl {
+    transform: scale(1.1);
+    transform-origin: top center;
+    width: 90%;
+  }
+  .simple-mode {
+    transform: scale(1.15);
+    transform-origin: top center;
+    width: 85%;
+  }
+}

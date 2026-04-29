@@ -21,7 +21,7 @@ export function BottomNav() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-2 py-2 safe-area-inset-bottom z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-2 py-2 safe-area-inset-bottom z-50">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;

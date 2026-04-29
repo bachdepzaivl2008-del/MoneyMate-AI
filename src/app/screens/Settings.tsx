@@ -1,13 +1,14 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
   Moon, Sun, Type, Globe, Bell, Lock, Download,
   Trash2, ChevronRight, Eye, User, DollarSign,
   Accessibility, Shield, HelpCircle, Info, LogOut,
+  Target, GraduationCap, Users, UserCircle
 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Card } from "../components/ui/card";
 import { SectionHeader } from "../components/ui/SectionHeader";
+import { useAppStore } from "../store/useAppStore";
 
 function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
   return (
@@ -28,12 +29,8 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
 
 export default function Settings() {
   const navigate = useNavigate();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [fontSize, setFontSize] = useState<"normal" | "large" | "xlarge">("normal");
-  const [simpleMode, setSimpleMode] = useState(false);
-  const [notifications, setNotifications] = useState(true);
-  const [budgetAlerts, setBudgetAlerts] = useState(true);
-  const [currency, setCurrency] = useState("VND");
+  const { settings, updateSettings, applyPersonaPresets } = useAppStore();
+  const { theme, fontSize, simpleMode, notifications, budgetAlerts, currency, userPersona, userGoal } = settings;
 
   const fontSizeOptions = [
     { key: "normal", label: "Bình Thường" },
@@ -47,8 +44,8 @@ export default function Settings() {
     <PageContainer className="space-y-6 lg:space-y-8 max-w-xl lg:max-w-4xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Cài Đặt</h1>
-        <p className="text-slate-500 text-sm">Tuỳ chỉnh ứng dụng theo ý bạn</p>
+        <h1 className="text-2xl font-bold text-foreground mb-1">Cài Đặt</h1>
+        <p className="text-muted-foreground text-sm">Tuỳ chỉnh ứng dụng theo ý bạn</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -56,7 +53,7 @@ export default function Settings() {
         <div className="space-y-6">
           {/* Profile Quick Link */}
           <Card
-            className="p-4 border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow bg-gradient-to-r from-blue-50 to-indigo-50"
+            className="p-4 border-border shadow-sm cursor-pointer hover:shadow-md transition-shadow bg-card hover:bg-muted/50"
             onClick={() => navigate("/app/profile")}
           >
             <div className="flex items-center gap-4">
@@ -64,17 +61,17 @@ export default function Settings() {
                 <span className="text-2xl font-bold text-white">A</span>
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-slate-900">Nguyễn Văn A</div>
-                <div className="text-sm text-slate-500">nguyenvana@email.com</div>
+                <div className="font-semibold text-foreground">Nguyễn Văn A</div>
+                <div className="text-sm text-muted-foreground">nguyenvana@email.com</div>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>
           </Card>
 
           {/* Appearance */}
           <div>
             <SectionHeader title="Giao Diện" className="mb-3" />
-            <Card className="border-slate-100 shadow-sm divide-y divide-slate-100">
+            <Card className="border-border shadow-sm divide-y divide-border">
               {/* Theme Toggle */}
               <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
@@ -83,11 +80,11 @@ export default function Settings() {
                     : <Moon className="w-5 h-5 text-indigo-500" />
                   }
                   <div>
-                    <div className="text-sm font-medium text-slate-800">Chủ Đề</div>
-                    <div className="text-xs text-slate-500">{theme === "light" ? "Sáng" : "Tối"}</div>
+                    <div className="text-sm font-medium text-foreground">Chủ Đề</div>
+                    <div className="text-xs text-muted-foreground">{theme === "light" ? "Sáng" : "Tối"}</div>
                   </div>
                 </div>
-                <Toggle value={theme === "dark"} onChange={() => setTheme(theme === "light" ? "dark" : "light")} />
+                <Toggle value={theme === "dark"} onChange={() => updateSettings({ theme: theme === "light" ? "dark" : "light" })} />
               </div>
 
               {/* Simple Mode */}
@@ -95,47 +92,99 @@ export default function Settings() {
                 <div className="flex items-center gap-3">
                   <Eye className="w-5 h-5 text-purple-500" />
                   <div>
-                    <div className="text-sm font-medium text-slate-800">Chế Độ Đơn Giản</div>
-                    <div className="text-xs text-slate-500">Hiển thị phần tử lớn hơn</div>
+                    <div className="text-sm font-medium text-foreground">Chế Độ Đơn Giản</div>
+                    <div className="text-xs text-muted-foreground">Hiển thị phần tử lớn hơn</div>
                   </div>
                 </div>
-                <Toggle value={simpleMode} onChange={() => setSimpleMode(!simpleMode)} />
+                <Toggle value={simpleMode} onChange={() => updateSettings({ simpleMode: !simpleMode })} />
               </div>
 
               {/* Accessibility */}
               <button
-                className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
                 onClick={() => {}}
               >
                 <div className="flex items-center gap-3">
                   <Accessibility className="w-5 h-5 text-green-500" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-slate-800">Trợ Năng</div>
-                    <div className="text-xs text-slate-500">Điều chỉnh trợ năng cho màn hình</div>
+                    <div className="text-sm font-medium text-foreground">Trợ Năng</div>
+                    <div className="text-xs text-muted-foreground">Điều chỉnh trợ năng cho màn hình</div>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
+            </Card>
+          </div>
+
+          {/* Persona & Goals */}
+          <div>
+            <SectionHeader title="Đối Tượng & Mục Tiêu" className="mb-3" />
+            <Card className="border-border shadow-sm divide-y divide-border">
+              {/* Persona Selection */}
+              <div className="p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <UserCircle className="w-5 h-5 text-blue-500" />
+                  <div className="text-sm font-medium text-foreground">Bạn dùng MoneyMate cho:</div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: "student", label: "Sinh Viên", icon: GraduationCap },
+                    { id: "professional", label: "NV Kỷ Luật", icon: Target },
+                    { id: "investor", label: "Nhà Đầu Tư", icon: Target }, // using Target as a fallback or import Rocket if needed
+                    { id: "hustler", label: "Freelancer", icon: User },
+                    { id: "entrepreneur", label: "Doanh Nhân", icon: User },
+                    { id: "family", label: "Gia Đình", icon: Users },
+                    { id: "senior", label: "Cao Tuổi", icon: User },
+                  ].map((p) => {
+                    const Icon = p.icon;
+                    const isActive = userPersona === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => updateSettings({ userPersona: p.id })}
+                        className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                          isActive ? "bg-blue-600 border-blue-600 text-white shadow-md" : "bg-muted border-transparent text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 flex-shrink-0" />
+                        <span className="text-xs font-semibold">{p.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {userPersona !== settings.userPersona && (
+                  <button 
+                    onClick={() => {
+                      if (window.confirm("Cập nhật lại danh mục mặc định cho đối tượng này? (Dữ liệu cũ sẽ được bảo toàn)")) {
+                        applyPersonaPresets();
+                      }
+                    }}
+                    className="w-full mt-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-200 dark:border-blue-800"
+                  >
+                    Áp dụng danh mục gợi ý mới
+                  </button>
+                )}
+              </div>
             </Card>
           </div>
 
           {/* Font Size */}
           <div>
             <SectionHeader title="Cỡ Chữ" className="mb-3" />
-            <Card className="p-4 border-slate-100 shadow-sm">
+            <Card className="p-4 border-border shadow-sm">
               <div className="flex items-center gap-2 mb-3">
-                <Type className="w-4 h-4 text-slate-500" />
-                <span className="text-sm text-slate-600">Chọn cỡ chữ phù hợp</span>
+                <Type className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Chọn cỡ chữ phù hợp</span>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {fontSizeOptions.map((opt) => (
                   <button
                     key={opt.key}
-                    onClick={() => setFontSize(opt.key)}
+                    onClick={() => updateSettings({ fontSize: opt.key })}
                     className={`h-10 rounded-xl text-xs font-medium transition-all ${
                       fontSize === opt.key
                         ? "bg-blue-600 text-white shadow-md"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        : "bg-muted text-foreground hover:bg-accent"
                     }`}
                   >
                     {opt.label}
@@ -151,22 +200,22 @@ export default function Settings() {
           {/* General */}
           <div>
             <SectionHeader title="Chung" className="mb-3" />
-            <Card className="border-slate-100 shadow-sm divide-y divide-slate-100">
+            <Card className="border-border shadow-sm divide-y divide-border">
               {/* Currency */}
               <div className="p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <DollarSign className="w-5 h-5 text-green-500" />
-                  <div className="text-sm font-medium text-slate-800">Đơn Vị Tiền Tệ</div>
+                  <div className="text-sm font-medium text-foreground">Đơn Vị Tiền Tệ</div>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {currencyOptions.map((c) => (
                     <button
                       key={c}
-                      onClick={() => setCurrency(c)}
+                      onClick={() => updateSettings({ currency: c })}
                       className={`h-9 rounded-xl text-xs font-bold transition-all ${
                         currency === c
                           ? "bg-green-600 text-white shadow-md"
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                          : "bg-muted text-foreground hover:bg-accent"
                       }`}
                     >
                       {c}
@@ -176,15 +225,15 @@ export default function Settings() {
               </div>
 
               {/* Language */}
-              <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
                   <Globe className="w-5 h-5 text-blue-500" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-slate-800">Ngôn Ngữ</div>
-                    <div className="text-xs text-slate-500">Tiếng Việt</div>
+                    <div className="text-sm font-medium text-foreground">Ngôn Ngữ</div>
+                    <div className="text-xs text-muted-foreground">Tiếng Việt</div>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
             </Card>
           </div>
@@ -192,36 +241,36 @@ export default function Settings() {
           {/* Notifications */}
           <div>
             <SectionHeader title="Thông Báo" className="mb-3" />
-            <Card className="border-slate-100 shadow-sm divide-y divide-slate-100">
+            <Card className="border-border shadow-sm divide-y divide-border">
               <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <Bell className="w-5 h-5 text-blue-500" />
                   <div>
-                    <div className="text-sm font-medium text-slate-800">Thông Báo Chung</div>
-                    <div className="text-xs text-slate-500">Nhắc nhở và cập nhật</div>
+                    <div className="text-sm font-medium text-foreground">Thông Báo Chung</div>
+                    <div className="text-xs text-muted-foreground">Nhắc nhở và cập nhật</div>
                   </div>
                 </div>
-                <Toggle value={notifications} onChange={() => setNotifications(!notifications)} />
+                <Toggle value={notifications} onChange={() => updateSettings({ notifications: !notifications })} />
               </div>
               <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <Shield className="w-5 h-5 text-orange-500" />
                   <div>
-                    <div className="text-sm font-medium text-slate-800">Cảnh Báo Ngân Sách</div>
-                    <div className="text-xs text-slate-500">Khi gần vượt giới hạn</div>
+                    <div className="text-sm font-medium text-foreground">Cảnh Báo Ngân Sách</div>
+                    <div className="text-xs text-muted-foreground">Khi gần vượt giới hạn</div>
                   </div>
                 </div>
-                <Toggle value={budgetAlerts} onChange={() => setBudgetAlerts(!budgetAlerts)} />
+                <Toggle value={budgetAlerts} onChange={() => updateSettings({ budgetAlerts: !budgetAlerts })} />
               </div>
               <button
-                className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
                 onClick={() => navigate("/app/notifications")}
               >
                 <div className="flex items-center gap-3">
-                  <Bell className="w-5 h-5 text-slate-500" />
-                  <span className="text-sm font-medium text-slate-800">Xem Tất Cả Thông Báo</span>
+                  <Bell className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm font-medium text-foreground">Xem Tất Cả Thông Báo</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
             </Card>
           </div>
@@ -229,31 +278,31 @@ export default function Settings() {
           {/* Privacy & Data */}
           <div>
             <SectionHeader title="Bảo Mật & Dữ Liệu" className="mb-3" />
-            <Card className="border-slate-100 shadow-sm divide-y divide-slate-100">
-              <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+            <Card className="border-border shadow-sm divide-y divide-border">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-slate-500" />
-                  <span className="text-sm font-medium text-slate-800">Cài Đặt Bảo Mật</span>
+                  <Lock className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm font-medium text-foreground">Cài Đặt Bảo Mật</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
-              <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
                   <Download className="w-5 h-5 text-blue-500" />
-                  <span className="text-sm font-medium text-slate-800">Xuất Dữ Liệu</span>
+                  <span className="text-sm font-medium text-foreground">Xuất Dữ Liệu</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
-              <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <HelpCircle className="w-5 h-5 text-slate-500" />
-                  <span className="text-sm font-medium text-slate-800">Trợ Giúp & Phản Hồi</span>
+                  <HelpCircle className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm font-medium text-foreground">Trợ Giúp & Phản Hồi</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
-              <button className="w-full flex items-center gap-3 p-4 hover:bg-red-50 transition-colors">
-                <Trash2 className="w-5 h-5 text-red-500" />
-                <span className="text-sm font-medium text-red-600">Xóa Tất Cả Dữ Liệu</span>
+              <button className="w-full flex items-center gap-3 p-4 hover:bg-destructive/10 transition-colors">
+                <Trash2 className="w-5 h-5 text-destructive" />
+                <span className="text-sm font-medium text-destructive">Xóa Tất Cả Dữ Liệu</span>
               </button>
             </Card>
           </div>
@@ -261,7 +310,7 @@ export default function Settings() {
           {/* Sign Out */}
           <button
             onClick={() => navigate("/")}
-            className="w-full h-12 bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-700 font-medium rounded-xl transition-all flex items-center justify-center gap-2"
+            className="w-full h-12 bg-muted hover:bg-destructive/10 hover:text-destructive text-foreground font-medium rounded-xl transition-all flex items-center justify-center gap-2"
           >
             <LogOut className="w-5 h-5" />
             Đăng Xuất
