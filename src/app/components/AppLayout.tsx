@@ -13,7 +13,10 @@ export default function AppLayout() {
   const simpleModeClass = settings.simpleMode ? "simple-mode" : "";
 
   return (
-    <div className={`min-h-screen flex flex-col md:flex-row relative w-full h-full overflow-hidden transition-all bg-background text-foreground ${fontSizeClass} ${simpleModeClass}`}>
+    <div 
+      className={`min-h-screen flex flex-col md:flex-row relative w-full h-full overflow-hidden transition-all bg-background text-foreground ${fontSizeClass} ${simpleModeClass}`}
+      data-persona={settings.userPersona || "student"}
+    >
       <Sidebar />
       <div className="md:hidden">
         <TopBar />

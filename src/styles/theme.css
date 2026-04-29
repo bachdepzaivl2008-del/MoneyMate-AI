@@ -197,3 +197,34 @@
     @apply bg-muted-foreground/30 hover:bg-muted-foreground/50;
   }
 }
+
+/* Persona Themes Override */
+[data-persona="student"] {
+  --primary: #3b82f6; /* Blue 500 */
+  --primary-foreground: #ffffff;
+}
+[data-persona="professional"] {
+  --primary: #10b981; /* Emerald 500 */
+  --primary-foreground: #ffffff;
+}
+[data-persona="investor"] {
+  --primary: #8b5cf6; /* Violet 500 */
+  --primary-foreground: #ffffff;
+}
+[data-persona="hustler"] {
+  --primary: #f59e0b; /* Amber 500 */
+  --primary-foreground: #ffffff;
+}
+[data-persona="entrepreneur"] {
+  --primary: #eab308; /* Yellow 500 */
+  --primary-foreground: #ffffff;
+}
+[data-persona="family"] {
+  --primary: #f43f5e; /* Rose 500 */
+  --primary-foreground: #ffffff;
+}
+[data-persona="senior"] {
+  --primary: #0ea5e9; /* Sky 500 */
+  --primary-foreground: #ffffff;
+}
+

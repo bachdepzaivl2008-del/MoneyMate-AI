@@ -75,7 +75,7 @@ export default function OnboardingCategories() {
         </div>
       </div>
 
-      <div className="space-y-3 mt-6">
+      <div className="sticky bottom-0 bg-background pt-4 pb-6 space-y-3 mt-6 -mx-6 px-6 border-t border-border/50">
         <button
           onClick={handleFinish}
           className="w-full h-14 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors"
