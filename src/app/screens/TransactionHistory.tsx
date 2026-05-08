@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Search, ShoppingBag, Utensils, Car, Home, Heart, TrendingUp, Edit, Trash2 } from "lucide-react";
+import { Search, ShoppingBag, Utensils, Car, Home, Heart, TrendingUp, Trash2 } from "lucide-react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Card } from "../components/ui/card";
-import { SectionHeader } from "../components/ui/SectionHeader";
 import { useAppStore } from "../store/useAppStore";
+import { DatePicker } from "../components/ui/date-picker";
 
 const categoryIcons: Record<string, React.ElementType> = {
   "Ăn Uống": Utensils, "Mua Sắm": ShoppingBag, "Di Chuyển": Car,
@@ -14,6 +14,17 @@ const categoryIcons: Record<string, React.ElementType> = {
 export default function TransactionHistory() {
   const { transactions, deleteTransaction, getWalletById } = useAppStore();
   const [searchQuery, setSearchQuery] = useState("");
+  const getToday = () => new Date().toISOString().split("T")[0];
+  const getThirtyDaysAgo = () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split("T")[0];
+  };
+
+  const [dateRange, setDateRange] = useState({
+    startDate: getThirtyDaysAgo(),
+    endDate: getToday(),
+  });
   const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
 
   const filtered = transactions
@@ -22,7 +33,8 @@ export default function TransactionHistory() {
         t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         t.category.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesFilter = filterType === "all" || t.type === filterType;
-      return matchesSearch && matchesFilter;
+      const matchesDate = t.date >= dateRange.startDate && t.date <= dateRange.endDate;
+      return matchesSearch && matchesFilter && matchesDate;
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
@@ -38,9 +50,14 @@ export default function TransactionHistory() {
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
 
-    if (d.toDateString() === today.toDateString()) return "Hôm Nay";
-    if (d.toDateString() === yesterday.toDateString()) return "Hôm Qua";
-    return d.toLocaleDateString("vi-VN", { day: "numeric", month: "short", year: "numeric" });
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const formatted = `${day}/${month}/${year}`;
+
+    if (d.toDateString() === today.toDateString()) return `Hôm Nay (${formatted})`;
+    if (d.toDateString() === yesterday.toDateString()) return `Hôm Qua (${formatted})`;
+    return formatted;
   };
 
   return (
@@ -62,23 +79,38 @@ export default function TransactionHistory() {
         />
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2">
-        {(["all", "income", "expense"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilterType(f)}
-            className={`flex-1 h-11 rounded-xl transition-all text-sm font-medium ${
-              filterType === f
-                ? f === "income" ? "bg-green-600 text-white shadow-md"
-                : f === "expense" ? "bg-red-600 text-white shadow-md"
-                : "bg-blue-600 text-white shadow-md"
-                : "bg-background border border-border text-muted-foreground hover:bg-muted"
-            }`}
-          >
-            {f === "all" ? "Tất Cả" : f === "income" ? "Thu Nhập" : "Chi Tiêu"}
-          </button>
-        ))}
+      {/* Filter Tabs & Date */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div className="flex gap-2 w-full sm:w-auto">
+          {(["all", "income", "expense"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilterType(f)}
+              className={`flex-1 sm:flex-none px-4 h-11 rounded-xl transition-all text-sm font-medium ${
+                filterType === f
+                  ? f === "income" ? "bg-green-600 text-white shadow-md"
+                  : f === "expense" ? "bg-red-600 text-white shadow-md"
+                  : "bg-blue-600 text-white shadow-md"
+                  : "bg-background border border-border text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              {f === "all" ? "Tất Cả" : f === "income" ? "Thu Nhập" : "Chi Tiêu"}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <DatePicker 
+            value={dateRange.startDate}
+            onChange={(val) => setDateRange(p => ({ ...p, startDate: val }))}
+            className="flex-1 sm:w-36 h-11 px-3"
+          />
+          <span className="text-muted-foreground">-</span>
+          <DatePicker 
+            value={dateRange.endDate}
+            onChange={(val) => setDateRange(p => ({ ...p, endDate: val }))}
+            className="flex-1 sm:w-36 h-11 px-3"
+          />
+        </div>
       </div>
 
       {/* Transactions */}

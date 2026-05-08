@@ -116,57 +116,6 @@ export default function Settings() {
             </Card>
           </div>
 
-          {/* Persona & Goals */}
-          <div>
-            <SectionHeader title="Đối Tượng & Mục Tiêu" className="mb-3" />
-            <Card className="border-border shadow-sm divide-y divide-border">
-              {/* Persona Selection */}
-              <div className="p-4">
-                <div className="flex items-center gap-3 mb-4">
-                  <UserCircle className="w-5 h-5 text-blue-500" />
-                  <div className="text-sm font-medium text-foreground">Bạn dùng MoneyMate cho:</div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { id: "student", label: "Sinh Viên", icon: GraduationCap },
-                    { id: "professional", label: "NV Kỷ Luật", icon: Target },
-                    { id: "investor", label: "Nhà Đầu Tư", icon: Target }, // using Target as a fallback or import Rocket if needed
-                    { id: "hustler", label: "Freelancer", icon: User },
-                    { id: "entrepreneur", label: "Doanh Nhân", icon: User },
-                    { id: "family", label: "Gia Đình", icon: Users },
-                    { id: "senior", label: "Cao Tuổi", icon: User },
-                  ].map((p) => {
-                    const Icon = p.icon;
-                    const isActive = userPersona === p.id;
-                    return (
-                      <button
-                        key={p.id}
-                        onClick={() => updateSettings({ userPersona: p.id })}
-                        className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                          isActive ? "bg-blue-600 border-blue-600 text-white shadow-md" : "bg-muted border-transparent text-foreground hover:bg-accent"
-                        }`}
-                      >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="text-xs font-semibold">{p.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-                {userPersona !== settings.userPersona && (
-                  <button 
-                    onClick={() => {
-                      if (window.confirm("Cập nhật lại danh mục mặc định cho đối tượng này? (Dữ liệu cũ sẽ được bảo toàn)")) {
-                        applyPersonaPresets();
-                      }
-                    }}
-                    className="w-full mt-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-200 dark:border-blue-800"
-                  >
-                    Áp dụng danh mục gợi ý mới
-                  </button>
-                )}
-              </div>
-            </Card>
-          </div>
 
           {/* Font Size */}
           <div>
@@ -300,7 +249,15 @@ export default function Settings() {
                 </div>
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
-              <button className="w-full flex items-center gap-3 p-4 hover:bg-destructive/10 transition-colors">
+              <button 
+                onClick={() => {
+                  if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ dữ liệu? Hành động này không thể hoàn tác.")) {
+                    useAppStore.getState().resetStore();
+                    navigate("/");
+                  }
+                }}
+                className="w-full flex items-center gap-3 p-4 hover:bg-destructive/10 transition-colors"
+              >
                 <Trash2 className="w-5 h-5 text-destructive" />
                 <span className="text-sm font-medium text-destructive">Xóa Tất Cả Dữ Liệu</span>
               </button>

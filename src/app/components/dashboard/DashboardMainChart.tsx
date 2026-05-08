@@ -1,9 +1,12 @@
 import { useAppStore } from "../../store/useAppStore";
 import { Card } from "../ui/card";
+import { SectionHeader } from "../ui/SectionHeader";
+import { Wallet } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export function DashboardMainChart() {
-  const { settings, getMonthlyIncome, getMonthlyExpenses, getTotalBalance } = useAppStore();
-  const persona = settings.userPersona;
+  const navigate = useNavigate();
+  const { settings, getMonthlyIncome, getMonthlyExpenses, getTotalBalance, wallets } = useAppStore();
   const simpleMode = settings.simpleMode;
 
   const monthlyIncome = getMonthlyIncome();
@@ -16,119 +19,92 @@ export function DashboardMainChart() {
     return n.toLocaleString("vi-VN");
   };
 
-  if (persona === "senior") return null;
+  const formatFull = (n: number) => n.toLocaleString("vi-VN") + "₫";
 
-  if (persona === "professional") {
-    // 50/30/20 Rule Visualization
-    const needs = monthlyExpenses * 0.5;
-    const wants = monthlyExpenses * 0.3;
-    const savings = monthlyExpenses * 0.2;
-    return (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold px-1">Biểu Đồ 50/30/20</h3>
-        <Card className="p-6 bg-card flex flex-col items-center justify-center space-y-6">
-          <div className="w-40 h-40 rounded-full border-[16px] border-primary flex items-center justify-center relative shadow-sm">
-             <div className="absolute inset-0 rounded-full border-[16px] border-secondary" style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%, 0 100%, 0 50%)' }} />
-             <div className="absolute inset-0 rounded-full border-[16px] border-accent" style={{ clipPath: 'polygon(50% 50%, 0 50%, 0 0, 50% 0)' }} />
-             <div className="text-center">
-               <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Chi Tiêu</div>
-               <div className="font-bold text-xl">{formatMoney(monthlyExpenses)}</div>
-             </div>
-          </div>
-          <div className="grid grid-cols-3 w-full text-center gap-2">
-            <div className="p-3 bg-primary/10 rounded-xl">
-              <div className="text-xs font-semibold text-primary mb-1">50% Nhu Cầu</div>
-              <div className="text-sm font-bold">{formatMoney(needs)}</div>
-            </div>
-            <div className="p-3 bg-secondary/20 rounded-xl">
-              <div className="text-xs font-semibold text-secondary-foreground mb-1">30% Sở Thích</div>
-              <div className="text-sm font-bold">{formatMoney(wants)}</div>
-            </div>
-            <div className="p-3 bg-accent/50 rounded-xl">
-              <div className="text-xs font-semibold text-accent-foreground mb-1">20% Tích Lũy</div>
-              <div className="text-sm font-bold">{formatMoney(savings)}</div>
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
+  // Không hiển thị biểu đồ nếu chưa có dữ liệu giao dịch/ví nào
+  if (monthlyIncome === 0 && monthlyExpenses === 0 && totalBalance === 0) {
+    return null;
   }
 
-  if (persona === "entrepreneur") {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between px-1">
-          <h3 className="text-lg font-semibold">Báo Cáo Lãi/Lỗ Nhanh</h3>
-          <div className="bg-muted p-1 rounded-full flex text-xs font-medium">
-             <button className="px-3 py-1 bg-background shadow-sm rounded-full text-foreground">Kinh Doanh</button>
-             <button className="px-3 py-1 text-muted-foreground">Cá Nhân</button>
+  // Bảng màu mặc định cho các ví nếu ví không có màu (hoặc thiếu màu)
+  const fallbackColors = [
+    "bg-blue-500", "bg-purple-500", "bg-emerald-500", 
+    "bg-amber-500", "bg-rose-500", "bg-cyan-500"
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* 1. Tổng Kết Thu / Chi Tháng Này */}
+      {(monthlyIncome > 0 || monthlyExpenses > 0) && (
+        <div className="pt-2">
+          <SectionHeader title="Thu / Chi Tháng Này" className="mb-4" />
+          <div className={`grid ${simpleMode ? "grid-cols-1" : "grid-cols-2"} gap-4`}>
+            <Card className="border-border shadow-sm p-4 text-center rounded-2xl bg-green-50/50 dark:bg-green-950/20 border-green-100 dark:border-green-900/30">
+              <div className="text-sm text-green-700 dark:text-green-400 font-medium mb-1">Tổng Thu Nhập</div>
+              <div className={`text-green-600 dark:text-green-400 ${simpleMode ? "text-3xl" : "text-2xl lg:text-3xl"} font-bold`}>
+                +{formatMoney(monthlyIncome)}
+              </div>
+            </Card>
+            <Card className="border-border shadow-sm p-4 text-center rounded-2xl bg-red-50/50 dark:bg-red-950/20 border-red-100 dark:border-red-900/30">
+              <div className="text-sm text-red-700 dark:text-red-400 font-medium mb-1">Tổng Chi Tiêu</div>
+              <div className={`text-red-600 dark:text-red-400 ${simpleMode ? "text-3xl" : "text-2xl lg:text-3xl"} font-bold`}>
+                -{formatMoney(monthlyExpenses)}
+              </div>
+            </Card>
           </div>
         </div>
-        <Card className="p-6 bg-card flex flex-col space-y-4">
-           <div className="flex justify-between items-center pb-4 border-b border-border">
-             <div className="text-muted-foreground">Tổng Thu (Doanh thu)</div>
-             <div className="font-bold text-green-600">+{formatMoney(monthlyIncome)}</div>
-           </div>
-           <div className="flex justify-between items-center pb-4 border-b border-border">
-             <div className="text-muted-foreground">Tổng Chi (Chi phí)</div>
-             <div className="font-bold text-red-600">-{formatMoney(monthlyExpenses)}</div>
-           </div>
-           <div className="flex justify-between items-center pt-2">
-             <div className="font-semibold text-lg">Lợi Nhuận Gộp</div>
-             <div className={`font-bold text-xl ${monthlyIncome - monthlyExpenses >= 0 ? "text-primary" : "text-destructive"}`}>
-                {formatMoney(monthlyIncome - monthlyExpenses)}
-             </div>
-           </div>
-        </Card>
-      </div>
-    );
-  }
+      )}
 
-  if (persona === "investor") {
-    return (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold px-1">Cơ Cấu Tài Sản (Asset Allocation)</h3>
-        <Card className="p-6 bg-card">
-           <div className="space-y-4">
-             <div className="flex justify-between items-center">
-               <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary" /> <span>Tiền Mặt (Ví)</span></div>
-               <span className="font-semibold">{formatMoney(totalBalance)}</span>
+      {/* 2. Cơ Cấu Tài Sản (Asset Allocation) từ dữ liệu ví thật */}
+      {wallets.length > 0 && totalBalance > 0 && (
+        <div className="pt-2">
+          <SectionHeader 
+            title="Cơ Cấu Tài Sản" 
+            action={
+              <button onClick={() => navigate("/app/wallets")} className="text-primary text-sm font-medium hover:underline">
+                Quản lý Ví
+              </button>
+            }
+            className="mb-4" 
+          />
+          <Card className="p-5 bg-card border-border shadow-sm">
+             <div className="space-y-3">
+               {wallets.map((wallet, index) => {
+                 const percentage = ((wallet.balance / totalBalance) * 100).toFixed(1);
+                 const colorClass = wallet.color || fallbackColors[index % fallbackColors.length];
+                 return (
+                   <div key={wallet.id} className="flex justify-between items-center">
+                     <div className="flex items-center gap-2">
+                       <div className={`w-3 h-3 rounded-full ${colorClass.replace('text-', 'bg-')}`} /> 
+                       <span className="text-sm font-medium text-foreground">{wallet.name}</span>
+                       <span className="text-xs text-muted-foreground ml-1">({percentage}%)</span>
+                     </div>
+                     <span className="font-semibold text-sm">{formatFull(wallet.balance)}</span>
+                   </div>
+                 );
+               })}
              </div>
-             <div className="flex justify-between items-center">
-               <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-secondary" /> <span>Chứng Khoán</span></div>
-               <span className="font-semibold">{formatMoney(35000000)}</span>
+             
+             {/* Progress bar tổng hợp */}
+             <div className="w-full h-3 bg-muted rounded-full mt-5 flex overflow-hidden shadow-inner">
+                {wallets.map((wallet, index) => {
+                  const percentage = (wallet.balance / totalBalance) * 100;
+                  const colorClass = wallet.color || fallbackColors[index % fallbackColors.length];
+                  // Trích xuất mã màu nền (nếu color format là text-blue-500 thì chuyển thành bg-blue-500)
+                  const bgClass = colorClass.includes('text-') ? colorClass.replace('text-', 'bg-') : colorClass;
+                  
+                  return (
+                    <div 
+                      key={`bar-${wallet.id}`} 
+                      className={`h-full ${bgClass}`} 
+                      style={{ width: `${percentage}%` }} 
+                      title={`${wallet.name}: ${percentage.toFixed(1)}%`}
+                    />
+                  );
+                })}
              </div>
-             <div className="flex justify-between items-center">
-               <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-accent" /> <span>Tiết Kiệm Gửi Góp</span></div>
-               <span className="font-semibold">{formatMoney(15000000)}</span>
-             </div>
-           </div>
-           <div className="w-full h-3 bg-muted rounded-full mt-6 flex overflow-hidden">
-              <div className="h-full bg-primary" style={{ width: '20%' }} />
-              <div className="h-full bg-secondary" style={{ width: '50%' }} />
-              <div className="h-full bg-accent" style={{ width: '30%' }} />
-           </div>
-        </Card>
-      </div>
-    );
-  }
-
-  // Default Stats Grid for Student, Family, Hustler
-  return (
-    <div className={`grid ${simpleMode ? "grid-cols-2" : "grid-cols-3"} gap-4`}>
-      <Card className="border-border shadow-sm p-4 lg:p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-card transition-all hover:-translate-y-1">
-        <div className={`text-green-600 dark:text-green-400 ${simpleMode ? "text-2xl" : "text-xl lg:text-3xl"} font-bold mb-1`}>{formatMoney(monthlyIncome)}</div>
-        <div className="text-sm text-muted-foreground font-medium">Thu Nhập</div>
-      </Card>
-      <Card className="border-border shadow-sm p-4 lg:p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-card transition-all hover:-translate-y-1">
-        <div className={`text-red-600 dark:text-red-400 ${simpleMode ? "text-2xl" : "text-xl lg:text-3xl"} font-bold mb-1`}>{formatMoney(monthlyExpenses)}</div>
-        <div className="text-sm text-muted-foreground font-medium">Chi Tiêu</div>
-      </Card>
-      {!simpleMode && (
-        <Card className="border-border shadow-sm p-4 lg:p-6 text-center rounded-2xl flex flex-col items-center justify-center bg-card transition-all hover:-translate-y-1">
-          <div className="text-primary text-xl lg:text-3xl font-bold mb-1">{formatMoney(totalBalance)}</div>
-          <div className="text-sm text-muted-foreground font-medium">Tổng Tài Sản</div>
-        </Card>
+          </Card>
+        </div>
       )}
     </div>
   );

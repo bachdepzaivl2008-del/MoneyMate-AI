@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAppStore } from "../store/useAppStore";
+import { supabase } from "../../lib/supabase";
+import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,14 +11,43 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/app");
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data?.user) {
+        toast.success("Đăng nhập thành công!");
+        navigate("/app");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Email hoặc mật khẩu không đúng.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    navigate("/app");
+  const handleGoogleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/app'
+        }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error.message || "Không thể đăng nhập bằng Google.");
+    }
   };
 
   return (
@@ -31,15 +62,17 @@ export default function Login() {
         </div>
 
         <div className="relative group">
-          {/* Disabled Overlay/Notice */}
-          <div className="absolute -inset-2 bg-white/60 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-amber-200">
-            <div className="bg-amber-50 text-amber-700 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm border border-amber-100">
-              <span>⚠️</span>
-              <span>Yêu cầu Backend để hoạt động</span>
+          {/* Notice for missing env keys */}
+          {(!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) && (
+            <div className="absolute -inset-2 bg-white/60 backdrop-blur-[1px] z-20 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-amber-200">
+              <div className="bg-amber-50 text-amber-700 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm border border-amber-100">
+                <span>⚠️</span>
+                <span>Chưa cấu hình Supabase Keys (.env)</span>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="opacity-40 pointer-events-none">
+          <div className="bg-white p-2 rounded-2xl">
             <form onSubmit={handleLogin} className="space-y-5">
               <div>
                 <label htmlFor="email" className="block mb-2 text-foreground">
@@ -92,9 +125,10 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full h-14 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                disabled={loading}
+                className="w-full h-14 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
               >
-                Đăng Nhập
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Đăng Nhập"}
               </button>
             </form>
 

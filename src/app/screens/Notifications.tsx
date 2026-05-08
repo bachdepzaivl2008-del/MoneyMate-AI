@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Bell, BellOff, CheckCircle2, AlertCircle,
   TrendingDown, Target, Calendar, Info, ChevronRight,
@@ -8,70 +7,11 @@ import { useNavigate } from "react-router";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Card } from "../components/ui/card";
 import { SectionHeader } from "../components/ui/SectionHeader";
-
-type NotificationType = "warning" | "success" | "reminder" | "info";
-
-interface Notification {
-  id: number;
-  type: NotificationType;
-  title: string;
-  message: string;
-  time: string;
-  read: boolean;
-}
+import { useAppStore, NotificationType } from "../store/useAppStore";
 
 export default function Notifications() {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      type: "warning",
-      title: "Cảnh Báo Ngân Sách",
-      message: "Bạn đã dùng 90% ngân sách Di Chuyển tháng này. Còn lại 20.000₫.",
-      time: "5 phút trước",
-      read: false,
-    },
-    {
-      id: 2,
-      type: "success",
-      title: "Mục Tiêu Gần Đạt",
-      message: "Tuyệt vời! Bạn đã tiết kiệm được 85% mục tiêu tháng này.",
-      time: "2 giờ trước",
-      read: false,
-    },
-    {
-      id: 3,
-      type: "reminder",
-      title: "Nhắc Thanh Toán",
-      message: "Đừng quên đóng tiền điện trước ngày 25/04. Ước tính ~120.000₫.",
-      time: "Hôm qua",
-      read: false,
-    },
-    {
-      id: 4,
-      type: "info",
-      title: "Tổng Kết Tuần",
-      message: "Tuần này bạn chi tiêu 342.000₫, ít hơn 15% so với tuần trước.",
-      time: "2 ngày trước",
-      read: true,
-    },
-    {
-      id: 5,
-      type: "success",
-      title: "Giao Dịch Thành Công",
-      message: "Đã ghi nhận: Chi tiêu Ăn Uống 85.500₫ lúc 12:30 hôm nay.",
-      time: "3 ngày trước",
-      read: true,
-    },
-    {
-      id: 6,
-      type: "warning",
-      title: "Chi Tiêu Bất Thường",
-      message: "Phát hiện chi tiêu Mua Sắm cao hơn 50% so với tuần trước.",
-      time: "5 ngày trước",
-      read: true,
-    },
-  ]);
+  const { notifications, markAllNotificationsRead, markNotificationRead, deleteNotification } = useAppStore();
 
   const iconMap: Record<NotificationType, { icon: React.ElementType; color: string; bg: string }> = {
     warning: { icon: AlertCircle, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-100 dark:bg-orange-500/10" },
@@ -82,18 +22,20 @@ export default function Notifications() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  };
+  const markAllRead = () => markAllNotificationsRead();
+  const markRead = (id: string) => markNotificationRead(id);
+  const handleDelete = (id: string) => deleteNotification(id);
 
-  const markRead = (id: number) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-  };
-
-  const deleteNotification = (id: number) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const formatTime = (isoString: string) => {
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleString('vi-VN', { 
+        hour: '2-digit', minute: '2-digit', 
+        day: '2-digit', month: '2-digit'
+      });
+    } catch {
+      return isoString;
+    }
   };
 
   const unread = notifications.filter((n) => !n.read);
@@ -167,7 +109,7 @@ export default function Notifications() {
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="text-sm font-semibold text-foreground">{notif.title}</span>
                         <button
-                          onClick={(e) => { e.stopPropagation(); deleteNotification(notif.id); }}
+                          onClick={(e) => { e.stopPropagation(); handleDelete(notif.id); }}
                           className="text-muted-foreground/50 hover:text-red-400 transition-colors flex-shrink-0"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -175,7 +117,7 @@ export default function Notifications() {
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed mb-2">{notif.message}</p>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground/70">{notif.time}</span>
+                        <span className="text-xs text-muted-foreground/70">{formatTime(notif.time)}</span>
                         <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                       </div>
                     </div>
@@ -207,14 +149,14 @@ export default function Notifications() {
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="text-sm font-medium text-foreground">{notif.title}</span>
                         <button
-                          onClick={() => deleteNotification(notif.id)}
+                          onClick={() => handleDelete(notif.id)}
                           className="text-muted-foreground/50 hover:text-red-400 transition-colors flex-shrink-0"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed mb-1">{notif.message}</p>
-                      <span className="text-xs text-muted-foreground/70">{notif.time}</span>
+                      <span className="text-xs text-muted-foreground/70">{formatTime(notif.time)}</span>
                     </div>
                   </div>
                 </Card>

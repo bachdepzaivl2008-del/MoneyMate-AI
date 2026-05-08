@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
+import { supabase } from "../../lib/supabase";
+import { toast } from "sonner";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -8,14 +10,48 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/onboarding/start");
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.user) {
+        toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.");
+        navigate("/onboarding/quiz");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Đã xảy ra lỗi khi đăng ký.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignUp = () => {
-    navigate("/onboarding/start");
+  const handleGoogleSignUp = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/app'
+        }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error.message || "Không thể đăng nhập bằng Google.");
+    }
   };
 
   return (
@@ -30,15 +66,17 @@ export default function Signup() {
         </div>
 
         <div className="relative group">
-          {/* Disabled Overlay/Notice */}
-          <div className="absolute -inset-2 bg-white/60 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-amber-200">
-            <div className="bg-amber-50 text-amber-700 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm border border-amber-100">
-              <span>⚠️</span>
-              <span>Yêu cầu Backend để hoạt động</span>
+          {/* Notice for missing env keys */}
+          {(!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) && (
+            <div className="absolute -inset-2 bg-white/60 backdrop-blur-[1px] z-20 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-amber-200">
+              <div className="bg-amber-50 text-amber-700 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm border border-amber-100">
+                <span>⚠️</span>
+                <span>Chưa cấu hình Supabase Keys (.env)</span>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="opacity-40 pointer-events-none">
+          <div className="bg-white p-2 rounded-2xl">
             <form onSubmit={handleSignup} className="space-y-5">
               <div>
                 <label htmlFor="name" className="block mb-2 text-foreground">
@@ -90,6 +128,7 @@ export default function Signup() {
                     className="w-full h-14 pl-12 pr-12 bg-white border-2 border-border rounded-xl focus:border-blue-600 focus:outline-none transition-colors"
                     placeholder="Tạo mật khẩu"
                     required
+                    minLength={6}
                   />
                   <button
                     type="button"
@@ -103,9 +142,10 @@ export default function Signup() {
 
               <button
                 type="submit"
-                className="w-full h-14 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                disabled={loading}
+                className="w-full h-14 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
               >
-                Tạo Tài Khoản
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Tạo Tài Khoản"}
               </button>
             </form>
 

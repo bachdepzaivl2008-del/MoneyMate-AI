@@ -1,11 +1,32 @@
-import { Outlet } from "react-router";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 import { TopBar } from "./layout/TopBar";
 import { BottomNav } from "./layout/BottomNav";
 import { Sidebar } from "./layout/Sidebar";
 import { useAppStore } from "../store/useAppStore";
+import { Loader2 } from "lucide-react";
 
 export default function AppLayout() {
-  const { settings } = useAppStore();
+  const navigate = useNavigate();
+  const { settings, user, initialized, initializeAuth } = useAppStore();
+
+  useEffect(() => {
+    initializeAuth();
+  }, []);
+
+  useEffect(() => {
+    if (initialized && !user) {
+      navigate("/");
+    }
+  }, [initialized, user, navigate]);
+
+  if (!initialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   const fontSizeClass = 
     settings.fontSize === "large" ? "text-lg" : 

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router";
 import { LayoutDashboard, Receipt, Plus, Target, Settings, Bell, User, Wallet, PiggyBank, Brain, Repeat } from "lucide-react";
+import { useAppStore } from "../../store/useAppStore";
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -39,11 +40,14 @@ export function Sidebar() {
   }) => {
     const Icon = tab.icon;
     const active = isActive(tab.path);
+    const { notifications } = useAppStore();
+    const unreadCount = tab.id === "notifications" ? notifications.filter((n) => !n.read).length : 0;
+
     return (
       <button
         key={tab.id}
         onClick={() => navigate(tab.path)}
-        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium outline-none ${
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all font-medium outline-none ${
           isAdd
             ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md my-1"
             : active
@@ -51,11 +55,19 @@ export function Sidebar() {
             : "text-muted-foreground hover:bg-muted hover:text-foreground"
         }`}
       >
-        <Icon className="w-5 h-5 flex-shrink-0" />
-        <span className="text-sm">{tab.label}</span>
+        <div className="flex items-center gap-3">
+          <Icon className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm">{tab.label}</span>
+        </div>
+        {unreadCount > 0 && (
+          <span className="flex h-5 min-w-5 px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
       </button>
     );
   };
+
 
   return (
     <div className="hidden md:flex flex-col w-64 bg-background border-r border-border h-screen flex-shrink-0">

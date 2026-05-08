@@ -5,26 +5,30 @@ import { PageContainer } from "../components/layout/PageContainer";
 import { Card } from "../components/ui/card";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import { useAppStore, Transaction } from "../store/useAppStore";
+import { DatePicker } from "../components/ui/date-picker";
 
 const CHART_COLORS = ["#2563eb", "#16a34a", "#ea580c", "#d946ef", "#8b5cf6", "#eab308", "#06b6d4", "#f43f5e"];
 
 export default function Reports() {
   const { transactions } = useAppStore();
-  const [timeRange, setTimeRange] = useState<"week" | "month">("month");
+  const getFirstDayOfMonth = () => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split("T")[0];
+  };
+  const getToday = () => new Date().toISOString().split("T")[0];
+
+  const [dateRange, setDateRange] = useState({
+    startDate: getFirstDayOfMonth(),
+    endDate: getToday(),
+  });
+  const [activeFilter, setActiveFilter] = useState("month");
 
   // Filter transactions based on selected time range
   const filteredTransactions = useMemo(() => {
-    const today = new Date();
     return transactions.filter(tx => {
-      const txDate = new Date(tx.date);
-      if (timeRange === "month") {
-        return txDate.getMonth() === today.getMonth() && txDate.getFullYear() === today.getFullYear();
-      } else {
-        const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-        return txDate >= oneWeekAgo && txDate <= today;
-      }
+      return tx.date >= dateRange.startDate && tx.date <= dateRange.endDate;
     });
-  }, [transactions, timeRange]);
+  }, [transactions, dateRange]);
 
   // Donut Chart Data (Expenses by Category)
   const categoryData = useMemo(() => {
@@ -91,23 +95,57 @@ export default function Reports() {
           <p className="text-muted-foreground text-sm">Tình hình tài chính của bạn</p>
         </div>
         
-        <div className="flex bg-muted p-1 rounded-xl w-fit">
-          <button
-            onClick={() => setTimeRange("week")}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-              timeRange === "week" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            7 Ngày Qua
-          </button>
-          <button
-            onClick={() => setTimeRange("month")}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-              timeRange === "month" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Tháng Này
-          </button>
+        <div className="flex flex-col xl:flex-row gap-3">
+          <div className="flex bg-muted p-1 rounded-xl w-fit">
+            <button
+              onClick={() => {
+                const today = new Date();
+                const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                setDateRange({ startDate: sevenDaysAgo.toISOString().split("T")[0], endDate: getToday() });
+                setActiveFilter("week");
+              }}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                activeFilter === "week" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              7 Ngày Qua
+            </button>
+            <button
+              onClick={() => {
+                setDateRange({ startDate: getFirstDayOfMonth(), endDate: getToday() });
+                setActiveFilter("month");
+              }}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                activeFilter === "month" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Tháng Này
+            </button>
+            <button
+              onClick={() => {
+                setDateRange({ startDate: "2000-01-01", endDate: "2100-01-01" });
+                setActiveFilter("all");
+              }}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                activeFilter === "all" ? "bg-background text-blue-600 shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Tất Cả
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <DatePicker 
+              value={dateRange.startDate}
+              onChange={(val) => { setDateRange(p => ({ ...p, startDate: val })); setActiveFilter("custom"); }}
+              className="h-9 sm:h-10 px-2 sm:px-3 text-xs sm:text-sm w-[130px]"
+            />
+            <span className="text-muted-foreground text-sm">-</span>
+            <DatePicker 
+              value={dateRange.endDate}
+              onChange={(val) => { setDateRange(p => ({ ...p, endDate: val })); setActiveFilter("custom"); }}
+              className="h-9 sm:h-10 px-2 sm:px-3 text-xs sm:text-sm w-[130px]"
+            />
+          </div>
         </div>
       </div>
 

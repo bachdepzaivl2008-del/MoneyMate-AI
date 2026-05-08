@@ -4,6 +4,7 @@ import { ShoppingBag, Utensils, Car, Home, Heart, Smartphone, GraduationCap, Pla
 import { PageContainer } from "../components/layout/PageContainer";
 import { Card } from "../components/ui/card";
 import { useAppStore } from "../store/useAppStore";
+import { DatePicker } from "../components/ui/date-picker";
 
 export default function AddTransaction() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function AddTransaction() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedWalletId, setSelectedWalletId] = useState(wallets.find(w => w.isDefault)?.id || wallets[0]?.id || "");
   const [notes, setNotes] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [saved, setSaved] = useState(false);
 
   const handleSmartInput = (val: string) => {
@@ -92,7 +94,7 @@ export default function AddTransaction() {
       type: transactionType,
       category: selectedCategory,
       walletId: selectedWalletId,
-      date: new Date().toISOString().split("T")[0],
+      date: date,
       notes: notes || undefined,
     });
 
@@ -193,16 +195,26 @@ export default function AddTransaction() {
             </div>
           </Card>
 
-          {/* Description */}
-          <div>
-            <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Mô Tả</label>
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-14 px-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none transition-colors text-sm"
-              placeholder="Dùng để làm gì?"
-            />
+          {/* Description & Date */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Mô Tả</label>
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full h-14 px-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none transition-colors text-sm"
+                placeholder="Dùng để làm gì?"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Ngày</label>
+              <DatePicker 
+                value={date} 
+                onChange={setDate} 
+                className="w-full h-14 rounded-xl px-4 text-sm"
+              />
+            </div>
           </div>
 
           {/* Wallet Selector */}

@@ -4,6 +4,7 @@ import { PageContainer } from "../components/layout/PageContainer";
 import { Card } from "../components/ui/card";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import { useAppStore, SavingsGoal } from "../store/useAppStore";
+import { DatePicker } from "../components/ui/date-picker";
 
 const GOAL_COLORS = [
   { label: "Xanh Dương", value: "from-blue-500 to-indigo-600" },
@@ -26,6 +27,14 @@ function formatMoney(n: number) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "tr";
   if (n >= 1000) return (n / 1000).toFixed(0) + "k";
   return n.toLocaleString("vi-VN");
+}
+
+function formatDate(ds: string) {
+  if (!ds) return "";
+  const d = new Date(ds);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  return `${day}/${month}/${d.getFullYear()}`;
 }
 
 // ── Goal Card ──────────────────────────────────────────────
@@ -103,7 +112,7 @@ function GoalCard({
             {goal.deadline && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Calendar className="w-3.5 h-3.5" />
-                {new Date(goal.deadline).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                {formatDate(goal.deadline)}
               </div>
             )}
           </div>
@@ -425,11 +434,10 @@ export default function Goals() {
             {/* Deadline */}
             <div>
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Hạn Chót (không bắt buộc)</label>
-              <input
-                type="date"
+              <DatePicker 
                 value={formDeadline}
-                onChange={(e) => setFormDeadline(e.target.value)}
-                className="w-full h-12 px-4 bg-background border border-border rounded-xl focus:border-blue-600 focus:outline-none text-sm"
+                onChange={setFormDeadline}
+                className="w-full h-12 rounded-xl px-4"
               />
             </div>
 
