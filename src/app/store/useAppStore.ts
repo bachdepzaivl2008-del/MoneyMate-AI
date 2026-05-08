@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { User } from "@supabase/supabase-js";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "@/lib/supabase";
 
 // ─── Types ───────────────────────────────────────────────
 
